@@ -1,20 +1,29 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { CartProvider } from "@/context/CartContext";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { Noto_Sans_Arabic } from "next/font/google";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
+const notoArabic = Noto_Sans_Arabic({
+  subsets: ["arabic"],
+  variable: "--font-arabic",
   display: "swap",
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "SachMaroc — Boutique Premium Marocaine",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://sachmaroc.ma"),
+  title: {
+    default: "SachMaroc — متجر مغربي أونلاين",
+    template: "%s | SachMaroc",
+  },
   description:
-    "Découvrez une sélection premium de produits d'exception, inspirée par l'artisanat marocain. Livraison rapide et paiement à la livraison.",
+    "لقا أفضل المنتجات المغربية بأثمنة مناسبة. الدفع عند الاستلام والتوصيل لجميع المدن المغربية.",
+  keywords: ["متجر مغربي", "تسوق أونلاين", "المغرب", "الدفع عند الاستلام", "منتجات مغربية"],
+  openGraph: {
+    type: "website",
+    locale: "ar_MA",
+    siteName: "SachMaroc",
+  },
 };
 
 export default function RootLayout({
@@ -23,13 +32,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr" className={inter.variable}>
+    <html lang="ar" dir="rtl" className={notoArabic.variable} suppressHydrationWarning>
       <body className="font-sans antialiased">
-        <CartProvider>
-          <Header />
-          <main className="min-h-screen">{children}</main>
-          <Footer />
-        </CartProvider>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

@@ -2,23 +2,31 @@
 
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
-import { products } from "@/data/products";
+import type { Product } from "@/types/product";
 import ProductCard from "./ProductCard";
 
 interface ProductGridProps {
-  items?: typeof products;
+  items: Product[];
   title?: string;
   subtitle?: string;
   showViewAll?: boolean;
 }
 
 export default function ProductGrid({
-  items = products,
+  items,
   title,
   subtitle,
   showViewAll = false,
 }: ProductGridProps) {
   const { addItem } = useCart();
+
+  if (items.length === 0) {
+    return (
+      <section className="py-16 text-center">
+        <p className="text-ink-muted">ما كاين حتى منتج فهاد الفئة.</p>
+      </section>
+    );
+  }
 
   return (
     <section className="py-16 md:py-24">
@@ -26,24 +34,24 @@ export default function ProductGrid({
         <div className="mb-12 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
           <div>
             {subtitle && (
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-600">
+              <p className="mb-2 text-xs font-bold uppercase tracking-widest text-whatsapp">
                 {subtitle}
               </p>
             )}
             {title && (
-              <h2 className="text-3xl font-semibold tracking-tight text-ink md:text-4xl">
+              <h2 className="text-3xl font-bold tracking-tight text-ink md:text-4xl">
                 {title}
               </h2>
             )}
           </div>
           {showViewAll && (
             <Link
-              href="/catalog"
-              className="group inline-flex items-center gap-2 text-sm font-medium text-brand-600 transition-colors hover:text-brand-700"
+              href="/products"
+              className="group inline-flex items-center gap-2 text-sm font-medium text-ink transition-colors hover:text-whatsapp"
             >
-              Voir tout
+              شوف الكل
               <svg
-                className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                className="h-4 w-4 rotate-180 transition-transform group-hover:-translate-x-1"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"

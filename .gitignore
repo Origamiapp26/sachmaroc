@@ -28,8 +28,16 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# database
+/data/*.db
+/data/*.db-*
+
+# uploads
+/public/uploads/
+
 # env files
 .env*
+!.env.example
 
 # typescript
 *.tsbuildinfo

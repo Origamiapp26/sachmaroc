@@ -1,0 +1,281 @@
+[
+  {
+    "id": "1",
+    "slug": "jalaba-traditionnelle-premium",
+    "name": "جلابة تقليدية فاخرة",
+    "tagline": "صناعة يدوية مغربية أصيلة",
+    "description": "جلابة مغربية فاخرة مصنوعة من قماش قطني عالي الجودة مع تطريز يدوي دقيق. مثالية للمناسبات والأيام العادية. متوفرة بعدة مقاسات وألوان كلاسيكية.",
+    "price": 899,
+    "originalPrice": 1099,
+    "category": "تقليدي",
+    "image": "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=1200&q=80",
+      "https://images.unsplash.com/photo-1583391734357-b440058473c6?w=1200&q=80"
+    ],
+    "badge": "الأكثر مبيعاً",
+    "rating": 4.9,
+    "reviewCount": 156,
+    "features": [
+      "قطن 100% عالي الجودة",
+      "تطريز يدوي",
+      "صناعة مغربية",
+      "مقاسات S إلى XXL"
+    ],
+    "inStock": true,
+    "reviews": [
+      {
+        "id": "r1",
+        "author": "فاطمة ب.",
+        "rating": 5,
+        "comment": "جلابة نقية بزاف، الجودة ممتازة والتوصيل وصلني لكازا في يومين.",
+        "date": "2026-03-12",
+        "verified": true
+      },
+      {
+        "id": "r2",
+        "author": "يوسف أ.",
+        "rating": 5,
+        "comment": "خدمة مزيانة والمنتج أحسن من الصور. ننصح بيه.",
+        "date": "2026-02-28",
+        "verified": true
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "slug": "zit-argan-asli",
+    "name": "زيت أركان أصلي",
+    "tagline": "من سوس المغرب مباشرة",
+    "description": "زيت أركان طبيعي 100% معصور على البارد من أشجار الأركان في منطقة سوس. غني بفيتامين E ومثالي للبشرة والشعر. زجاجة 100 مل.",
+    "price": 149,
+    "category": "عناية",
+    "image": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=1200&q=80",
+      "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=1200&q=80"
+    ],
+    "badge": "جديد",
+    "rating": 4.8,
+    "reviewCount": 89,
+    "features": [
+      "أركان أصلي 100%",
+      "معصور على البارد",
+      "100 مل",
+      "من تعاونيات نسائية"
+    ],
+    "inStock": true,
+    "reviews": [
+      {
+        "id": "r3",
+        "author": "أمينة ل.",
+        "rating": 5,
+        "comment": "زيت نقي بزاف، بشرتي ولاوات ناعمة من أول استعمال.",
+        "date": "2026-04-01",
+        "verified": true
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "slug": "tajine-fkhari-yadawi",
+    "name": "طاجين فخاري يدوي",
+    "tagline": "فخار صافي من فاس",
+    "description": "طاجين فخاري تقليدي مصنوع يدوياً من حرفيين في فاس. مثالي للطاجين والكسكس والحريرة. يحافظ على نكهة الأكل الأصلية.",
+    "price": 299,
+    "originalPrice": 349,
+    "category": "مطبخ",
+    "image": "https://images.unsplash.com/photo-1594040226829-7f251ab46d80?w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1594040226829-7f251ab46d80?w=1200&q=80",
+      "https://images.unsplash.com/photo-1603199506016-b9a594b593c6?w=1200&q=80"
+    ],
+    "badge": "الأكثر مبيعاً",
+    "rating": 4.7,
+    "reviewCount": 72,
+    "features": [
+      "فخار طبيعي",
+      "صناعة يدوية",
+      "لـ 4-6 أشخاص",
+      "آمن للفرن"
+    ],
+    "inStock": true,
+    "reviews": [
+      {
+        "id": "r4",
+        "author": "حسن ر.",
+        "rating": 5,
+        "comment": "الطاجين ديالو مزيان بزاف، الطعم ديال الأكل تبدل تماماً.",
+        "date": "2025-12-15",
+        "verified": true
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "slug": "sajada-ben-amir",
+    "name": "سجادة بني عامر",
+    "tagline": "نسيج أمازيغي أصيل",
+    "description": "سجادة بني عامر تقليدية منسوجة يدوياً من صوف طبيعي. ألوان وزخارف أمازيغية أصيلة. قطعة فنية تزين أي بيت مغربي.",
+    "price": 2499,
+    "category": "ديكور",
+    "image": "https://images.unsplash.com/photo-1600166898309-ba6a5ac4be66?w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1600166898309-ba6a5ac4be66?w=1200&q=80",
+      "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=1200&q=80"
+    ],
+    "badge": "إصدار محدود",
+    "rating": 4.9,
+    "reviewCount": 34,
+    "features": [
+      "صوف طبيعي 100%",
+      "نسيج يدوي",
+      "200 × 140 سم",
+      "ألوان طبيعية"
+    ],
+    "inStock": true,
+    "reviews": [
+      {
+        "id": "r5",
+        "author": "نادية س.",
+        "rating": 5,
+        "comment": "سجادة خيالية، الجودة والتفاصيل كيعجبو العين.",
+        "date": "2026-03-05",
+        "verified": true
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "slug": "sabon-beldi-tabi3i",
+    "name": "صابون بلدي طبيعي",
+    "tagline": "من زيت الزيتون المغربي",
+    "description": "صابون بلدي تقليدي مصنوع من زيت الزيتون وزيت الأركان. بدون مواد كيميائية. مناسب لجميع أنواع البشرة. عبوة 3 قطع.",
+    "price": 89,
+    "category": "عناية",
+    "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1200&q=80"
+    ],
+    "rating": 4.6,
+    "reviewCount": 118,
+    "features": [
+      "مكونات طبيعية",
+      "زيت زيتون مغربي",
+      "3 قطع في العبوة",
+      "بدون كيماويات"
+    ],
+    "inStock": true,
+    "reviews": [
+      {
+        "id": "r6",
+        "author": "كريم م.",
+        "rating": 4,
+        "comment": "صابون مزيان وريحتو طبيعية. السعر مناسب.",
+        "date": "2026-01-20",
+        "verified": true
+      }
+    ]
+  },
+  {
+    "id": "6",
+    "slug": "kaftan-maghribi-motaraz",
+    "name": "قفطان مغربي مطرز",
+    "tagline": "أناقة للمناسبات الخاصة",
+    "description": "قفطان مغربي فاخر مع تطريز يدوي بالحرير والصقلي. تصميم عصري يجمع بين التقليد والحداثة. مثالي للأعراس والحفلات.",
+    "price": 1899,
+    "originalPrice": 2299,
+    "category": "تقليدي",
+    "image": "https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=1200&q=80",
+      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&q=80"
+    ],
+    "badge": "جديد",
+    "rating": 4.8,
+    "reviewCount": 45,
+    "features": [
+      "تطريز يدوي بالحرير",
+      "أقمشة فاخرة",
+      "تفصيل حسب الطلب",
+      "صناعة مغربية"
+    ],
+    "inStock": true,
+    "reviews": [
+      {
+        "id": "r7",
+        "author": "سارة ت.",
+        "rating": 5,
+        "comment": "قفطان رائع، لبستو فعرس ختي وكانت كلشي كيعجبهم.",
+        "date": "2026-02-10",
+        "verified": true
+      }
+    ]
+  },
+  {
+    "id": "7",
+    "slug": "atour-oud-maghribi",
+    "name": "عطر عود مغربي",
+    "tagline": "رائحة شرقية فاخرة",
+    "description": "عطر فاخر بخلاصة العود والمسك والورد. تركيبة حصرية مستوحاة من العطور المغربية التقليدية. زجاجة 50 مل مع علبة هدية.",
+    "price": 449,
+    "category": "عطور",
+    "image": "https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1541643600914-78b084683601?w=1200&q=80",
+      "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=1200&q=80"
+    ],
+    "badge": "الأكثر مبيعاً",
+    "rating": 4.7,
+    "reviewCount": 93,
+    "features": [
+      "50 مل",
+      "ثبات طويل",
+      "علبة هدية",
+      "صنع في المغرب"
+    ],
+    "inStock": true,
+    "reviews": [
+      {
+        "id": "r8",
+        "author": "عمر ت.",
+        "rating": 5,
+        "comment": "ريحة واعرة وثابتة، كنعطيه كهدية دايماً.",
+        "date": "2026-03-18",
+        "verified": true
+      }
+    ]
+  },
+  {
+    "id": "8",
+    "slug": "mnkoush-khshbi",
+    "name": "منقوش خشبي معلق",
+    "tagline": "حرفة فاسية تقليدية",
+    "description": "منقوش خشبي منحوت يدوياً بنقوش هندسية مغربية تقليدية. قطعة ديكور أنيقة للجدران. مصنوع من خشب الأرز الطبيعي.",
+    "price": 599,
+    "category": "ديكور",
+    "image": "https://images.unsplash.com/photo-1615529182904-14819c35db37?w=800&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1615529182904-14819c35db37?w=1200&q=80"
+    ],
+    "rating": 4.5,
+    "reviewCount": 28,
+    "features": [
+      "خشب أرز طبيعي",
+      "نحت يدوي",
+      "60 × 40 سم",
+      "تعليق جاهز"
+    ],
+    "inStock": true,
+    "reviews": [
+      {
+        "id": "r9",
+        "author": "ليلى ح.",
+        "rating": 5,
+        "comment": "تحفة فنية، زينت بها الصالون ديالي.",
+        "date": "2026-01-08",
+        "verified": true
+      }
+    ]
+  }
+]

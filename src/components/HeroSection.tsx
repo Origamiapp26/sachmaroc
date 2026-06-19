@@ -3,43 +3,35 @@ import Link from "next/link";
 export default function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-white">
-      {/* Ambient background */}
       <div className="absolute inset-0 bg-hero-glow" />
-      <div className="absolute -right-32 top-0 h-[600px] w-[600px] rounded-full bg-brand-100/30 blur-3xl" />
-      <div className="absolute -left-20 bottom-0 h-[400px] w-[400px] rounded-full bg-brand-50 blur-3xl" />
+      <div className="absolute -left-32 top-0 h-[600px] w-[600px] rounded-full bg-whatsapp-light/40 blur-3xl" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex min-h-[90vh] flex-col items-center justify-center py-20 lg:min-h-[85vh] lg:flex-row lg:gap-16 lg:py-0">
-          {/* Copy */}
-          <div className="flex flex-1 flex-col items-center text-center lg:items-start lg:text-left">
+        <div className="flex min-h-[85vh] flex-col items-center justify-center py-16 lg:flex-row lg:gap-16 lg:py-0">
+          <div className="flex flex-1 flex-col items-center text-center lg:items-start lg:text-right">
             <div
-              className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand-200/60 bg-brand-50/80 px-4 py-1.5 opacity-0 backdrop-blur-sm animate-fade-up"
+              className="mb-6 inline-flex items-center gap-2 rounded-full border border-whatsapp/30 bg-whatsapp-light/60 px-4 py-1.5 opacity-0 animate-fade-up"
               style={{ animationDelay: "0.1s" }}
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
-              <span className="text-xs font-medium tracking-wide text-brand-700">
-                Nouvelle collection 2026
+              <span className="h-1.5 w-1.5 rounded-full bg-whatsapp" />
+              <span className="text-xs font-medium text-ink">
+                منتجات مغربية أصلية
               </span>
             </div>
 
             <h1
-              className="max-w-2xl text-4xl font-semibold leading-[1.08] tracking-tight text-ink opacity-0 animate-fade-up sm:text-5xl md:text-6xl lg:text-[4.25rem]"
+              className="max-w-2xl text-4xl font-bold leading-tight tracking-tight text-ink opacity-0 animate-fade-up sm:text-5xl md:text-6xl"
               style={{ animationDelay: "0.2s" }}
             >
-              L&apos;élégance{" "}
-              <span className="bg-blue-gradient bg-clip-text text-transparent">
-                marocaine
-              </span>
-              , réinventée.
+              مرحبا بكم فـ{" "}
+              <span className="text-whatsapp">SachMaroc</span>
             </h1>
 
             <p
               className="mt-6 max-w-lg text-base leading-relaxed text-ink-muted opacity-0 animate-fade-up sm:text-lg"
               style={{ animationDelay: "0.35s" }}
             >
-              Découvrez une sélection premium d&apos;accessoires et de pièces
-              d&apos;exception, façonnés par l&apos;artisanat marocain avec une
-              finition luxe.
+              لقا أفضل المنتجات بأثمنة مناسبة والتوصيل لجميع المدن المغربية
             </p>
 
             <div
@@ -47,80 +39,69 @@ export default function HeroSection() {
               style={{ animationDelay: "0.5s" }}
             >
               <Link
-                href="/catalog"
-                className="inline-flex items-center justify-center rounded-full bg-brand-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-brand-600/25 transition-all hover:bg-brand-700 hover:shadow-xl hover:shadow-brand-600/30"
+                href="/products"
+                className="inline-flex items-center justify-center rounded-full bg-ink px-8 py-3.5 text-sm font-semibold text-white transition-all hover:bg-neutral-800"
               >
-                Explorer la collection
+                شوف المنتجات
               </Link>
               <Link
-                href="/catalog"
-                className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-8 py-3.5 text-sm font-semibold text-ink transition-all hover:border-brand-300 hover:bg-brand-50"
+                href="/products"
+                className="inline-flex items-center justify-center rounded-full border border-neutral-200 bg-white px-8 py-3.5 text-sm font-semibold text-ink transition-all hover:border-whatsapp hover:bg-whatsapp-light"
               >
-                Voir les best-sellers
+                الأكثر مبيعاً
               </Link>
             </div>
 
-            {/* Trust signals */}
             <div
               className="mt-14 flex flex-wrap items-center justify-center gap-8 opacity-0 animate-fade-up lg:justify-start"
               style={{ animationDelay: "0.65s" }}
             >
               {[
-                { value: "2 000+", label: "Clients satisfaits" },
-                { value: "4.9★", label: "Note moyenne" },
-                { value: "48h", label: "Livraison Maroc" },
+                { value: "+2000", label: "زبون راضي" },
+                { value: "4.9★", label: "تقييم ممتاز" },
+                { value: "48س", label: "توصيل سريع" },
               ].map((stat) => (
-                <div key={stat.label} className="text-center lg:text-left">
-                  <p className="text-xl font-semibold tracking-tight text-ink">
-                    {stat.value}
-                  </p>
+                <div key={stat.label} className="text-center lg:text-right">
+                  <p className="text-xl font-bold text-ink">{stat.value}</p>
                   <p className="mt-0.5 text-xs text-ink-faint">{stat.label}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Hero visual */}
           <div
-            className="relative mt-16 flex flex-1 items-center justify-center opacity-0 animate-fade-up lg:mt-0"
+            className="relative mt-12 flex flex-1 items-center justify-center opacity-0 animate-fade-up lg:mt-0"
             style={{ animationDelay: "0.4s" }}
           >
             <div className="relative w-full max-w-md lg:max-w-lg">
-              {/* Decorative ring */}
-              <div className="absolute -inset-4 rounded-[2rem] border border-brand-100/80" />
-              <div className="absolute -inset-8 rounded-[2.5rem] border border-brand-50" />
-
-              {/* Main image */}
-              <div className="relative overflow-hidden rounded-3xl bg-slate-100 shadow-luxury animate-float">
+              <div className="absolute -inset-4 rounded-[2rem] border border-neutral-100" />
+              <div className="relative overflow-hidden rounded-3xl bg-neutral-50 shadow-luxury animate-float">
                 <img
-                  src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&q=80"
-                  alt="Sac cuir premium SachMaroc"
+                  src="https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=800&q=80"
+                  alt="منتجات مغربية SachMaroc"
                   className="aspect-[4/5] w-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-transparent" />
-
-                {/* Floating card */}
-                <div className="absolute bottom-5 left-5 right-5 rounded-2xl bg-white/90 p-4 shadow-soft backdrop-blur-md">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                <div className="absolute bottom-5 right-5 left-5 rounded-2xl bg-white/95 p-4 shadow-soft backdrop-blur-md">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-wider text-brand-600">
-                        Best-seller
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-whatsapp">
+                        الأكثر مبيعاً
                       </p>
-                      <p className="mt-0.5 text-sm font-semibold text-ink">
-                        Sac Cuir Premium
+                      <p className="mt-0.5 text-sm font-bold text-ink">
+                        جلابة تقليدية فاخرة
                       </p>
                     </div>
-                    <p className="text-lg font-semibold text-ink">1 299 MAD</p>
+                    <p className="text-lg font-bold text-ink">899 د.م</p>
                   </div>
                 </div>
               </div>
 
-              {/* Secondary floating element */}
-              <div className="absolute -right-4 top-12 hidden rounded-2xl bg-white p-4 shadow-luxury sm:block lg:-right-8">
+              <div className="absolute -left-4 top-12 hidden rounded-2xl bg-white p-4 shadow-luxury sm:block lg:-left-8">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-50">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-whatsapp-light">
                     <svg
-                      className="h-5 w-5 text-green-600"
+                      className="h-5 w-5 text-whatsapp"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                     >
@@ -128,11 +109,9 @@ export default function HeroSection() {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-ink">
-                      Commande WhatsApp
-                    </p>
+                    <p className="text-xs font-bold text-ink">طلب عبر واتساب</p>
                     <p className="text-[11px] text-ink-faint">
-                      Paiement à la livraison
+                      الدفع عند الاستلام
                     </p>
                   </div>
                 </div>

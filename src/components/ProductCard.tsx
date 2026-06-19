@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import type { Product } from "@/data/products";
+import type { Product } from "@/types/product";
 import { formatPrice } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import WhatsAppButton from "./WhatsAppButton";
 
 interface StarRatingProps {
   rating: number;
@@ -24,7 +25,7 @@ export function StarRating({ rating, size = "sm" }: StarRatingProps) {
               ? "text-amber-400"
               : i < rating
                 ? "text-amber-300"
-                : "text-slate-200"
+                : "text-neutral-200"
           )}
           fill="currentColor"
           viewBox="0 0 20 20"
@@ -56,8 +57,7 @@ export default function ProductCard({
   return (
     <article className="group relative flex flex-col">
       <Link href={`/products/${product.slug}`} className="block">
-        <div className="relative overflow-hidden rounded-2xl bg-slate-50 ring-1 ring-slate-100/80 transition-all duration-500 group-hover:shadow-card-hover group-hover:ring-brand-200/60">
-          {/* Image */}
+        <div className="relative overflow-hidden rounded-2xl bg-neutral-50 ring-1 ring-neutral-100 transition-all duration-500 group-hover:shadow-card-hover group-hover:ring-whatsapp/30">
           <div className="relative aspect-[4/5] overflow-hidden">
             <img
               src={product.image}
@@ -65,25 +65,21 @@ export default function ProductCard({
               loading={priority ? "eager" : "lazy"}
               className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-            {/* Overlay gradient on hover */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-
-            {/* Badges */}
-            <div className="absolute left-3 top-3 flex flex-col gap-2">
+            <div className="absolute right-3 top-3 flex flex-col gap-2">
               {product.badge && (
-                <span className="rounded-full bg-white/95 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand-600 shadow-sm backdrop-blur-sm">
+                <span className="rounded-full bg-white/95 px-3 py-1 text-[11px] font-bold text-ink shadow-sm backdrop-blur-sm">
                   {product.badge}
                 </span>
               )}
               {discount && (
-                <span className="rounded-full bg-brand-600 px-3 py-1 text-[11px] font-semibold text-white shadow-sm">
+                <span className="rounded-full bg-ink px-3 py-1 text-[11px] font-bold text-white shadow-sm">
                   -{discount}%
                 </span>
               )}
             </div>
 
-            {/* Quick add button */}
             {onAddToCart && (
               <button
                 onClick={(e) => {
@@ -91,8 +87,8 @@ export default function ProductCard({
                   e.stopPropagation();
                   onAddToCart(product);
                 }}
-                className="absolute bottom-3 right-3 flex h-11 w-11 translate-y-2 items-center justify-center rounded-full bg-white text-ink opacity-0 shadow-luxury transition-all duration-300 hover:bg-brand-600 hover:text-white group-hover:translate-y-0 group-hover:opacity-100"
-                aria-label={`Ajouter ${product.name} au panier`}
+                className="absolute bottom-3 left-3 flex h-11 w-11 translate-y-2 items-center justify-center rounded-full bg-white text-ink opacity-0 shadow-luxury transition-all duration-300 hover:bg-ink hover:text-white group-hover:translate-y-0 group-hover:opacity-100"
+                aria-label={`زيد ${product.name} للسلة`}
               >
                 <svg
                   className="h-5 w-5"
@@ -112,17 +108,15 @@ export default function ProductCard({
           </div>
         </div>
 
-        {/* Product info */}
         <div className="mt-4 space-y-2 px-1">
-          <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-ink-faint">
+          <p className="text-[11px] font-medium text-ink-faint">
             {product.category}
           </p>
-          <h3 className="text-[15px] font-semibold leading-snug text-ink transition-colors group-hover:text-brand-600">
+          <h3 className="text-[15px] font-bold leading-snug text-ink transition-colors group-hover:text-whatsapp-dark">
             {product.name}
           </h3>
-          <p className="line-clamp-1 text-sm text-ink-muted">{product.tagline}</p>
 
-          <div className="flex items-center gap-2 pt-0.5">
+          <div className="flex items-center gap-2">
             <StarRating rating={product.rating} />
             <span className="text-xs text-ink-faint">
               ({product.reviewCount})
@@ -130,7 +124,7 @@ export default function ProductCard({
           </div>
 
           <div className="flex items-baseline gap-2 pt-1">
-            <span className="text-lg font-semibold tracking-tight text-ink">
+            <span className="text-lg font-bold text-ink dark:text-white">
               {formatPrice(product.price)}
             </span>
             {product.originalPrice && (
@@ -139,8 +133,23 @@ export default function ProductCard({
               </span>
             )}
           </div>
+          {product.stockQuantity <= 5 && product.stockQuantity > 0 && (
+            <p className="text-xs text-amber-600">باقي {product.stockQuantity} فقط</p>
+          )}
+          {!product.inStock && (
+            <p className="text-xs text-red-500">نفد المخزون</p>
+          )}
         </div>
       </Link>
+
+      <div className="mt-3 px-1">
+        <WhatsAppButton
+          items={[{ name: product.name, quantity: 1, price: product.price }]}
+          total={product.price}
+          label="اطلب دابا"
+          className="w-full py-2.5 text-xs"
+        />
+      </div>
     </article>
   );
 }

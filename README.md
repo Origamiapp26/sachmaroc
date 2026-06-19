@@ -1,29 +1,87 @@
 # SachMaroc
 
-Boutique e-commerce premium marocaine — Next.js + Tailwind CSS.
+متجر مغربي أونلاين production-ready — Next.js 15 + SQLite + TypeScript + Tailwind CSS
 
-## Features
+## المميزات
 
-- Homepage with luxury hero section
-- Product catalog with category filters
-- Product detail pages with reviews
-- Shopping cart (localStorage)
-- WhatsApp order button
-- Cash on delivery (paiement à la livraison)
-- Mobile responsive, premium Apple-inspired design
+- واجهة بالدارجة المغربية (RTL)
+- قاعدة بيانات **SQLite** مع Drizzle ORM
+- لوحة إدارة كاملة (`/admin`)
+- رفع صور المنتجات
+- إدارة الفئات، المخزون، المنتجات المميزة
+- إدارة الطلبات مع تتبع الحالة
+- بحث وفلترة المنتجات
+- الدفع عند الاستلام + واتساب
+- **Dark mode**
+- SEO (sitemap, robots, Open Graph)
 
-## Getting Started
+## التشغيل
 
 ```bash
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+افتح [http://localhost:3000](http://localhost:3000)
 
-## Tech Stack
+قاعدة البيانات كتتنشأ تلقائياً فـ `data/sachmaroc.db` مع بيانات أولية.
 
-- Next.js 15 (App Router)
-- React 19
-- Tailwind CSS 3
-- TypeScript
+## الإعداد (`.env.local`)
+
+```env
+AUTH_SECRET=your-random-secret-key
+ADMIN_PASSWORD=sachmaroc2026
+DATABASE_PATH=./data/sachmaroc.db
+NEXT_PUBLIC_WHATSAPP_NUMBER=212607674922
+NEXT_PUBLIC_SITE_URL=https://sachmaroc.ma
+```
+
+## الإدارة
+
+| الرابط | الوصف |
+|--------|--------|
+| `/admin/login` | تسجيل الدخول |
+| `/admin` | إحصائيات |
+| `/admin/products` | المنتجات + رفع صور |
+| `/admin/categories` | الفئات |
+| `/admin/orders` | الطلبات |
+
+- **المستخدم:** `admin`
+- **كلمة السر:** من `ADMIN_PASSWORD` (افتراضي: `sachmaroc2026`)
+
+## الصفحات
+
+| الصفحة | الرابط |
+|--------|--------|
+| الرئيسية | `/` |
+| المنتجات (بحث + فلترة) | `/products` |
+| السلة | `/cart` |
+| إتمام الطلب | `/checkout` |
+| تتبع الطلبات | `/orders` |
+| من نحن | `/about` |
+| اتصل بنا | `/contact` |
+| أسئلة شائعة | `/faq` |
+
+## قاعدة البيانات
+
+```bash
+npm run db:seed    # إعادة البيانات الأولية
+npm run db:migrate # تطبيق migrations
+```
+
+## الإنتاج
+
+```bash
+npm run build
+npm start
+```
+
+**ملاحظة:** SQLite مع `better-sqlite3` يحتاج بيئة Node.js (ماشي مناسب لـ Vercel serverless). للنشر استعمل VPS، Railway، Docker، أو Render.
+
+## الأمان
+
+- JWT sessions (httpOnly cookies)
+- bcrypt لكلمات السر
+- Middleware لحماية `/admin` و API الإدارة
+- رفع الصور محدود (5MB، أنواع مسموحة فقط)

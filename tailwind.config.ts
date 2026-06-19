@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,50 +10,34 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        brand: {
-          50: "#eff6ff",
-          100: "#dbeafe",
-          200: "#bfdbfe",
-          300: "#93c5fd",
-          400: "#60a5fa",
-          500: "#2563eb",
-          600: "#1d4ed8",
-          700: "#1e40af",
-          800: "#1e3a8a",
-          900: "#172554",
+        whatsapp: {
+          DEFAULT: "#25D366",
+          dark: "#20BD5A",
+          light: "#DCFCE7",
         },
         ink: {
-          DEFAULT: "#0f172a",
-          muted: "#64748b",
-          faint: "#94a3b8",
+          DEFAULT: "#0a0a0a",
+          muted: "#525252",
+          faint: "#a3a3a3",
         },
       },
       fontFamily: {
         sans: [
-          "var(--font-inter)",
-          "system-ui",
-          "-apple-system",
-          "BlinkMacSystemFont",
-          "Segoe UI",
-          "sans-serif",
-        ],
-        display: [
-          "var(--font-inter)",
+          "var(--font-arabic)",
           "system-ui",
           "-apple-system",
           "sans-serif",
         ],
       },
       boxShadow: {
-        soft: "0 2px 40px -12px rgba(15, 23, 42, 0.12)",
-        card: "0 4px 24px -4px rgba(15, 23, 42, 0.08)",
-        "card-hover": "0 20px 50px -12px rgba(37, 99, 235, 0.18)",
-        luxury: "0 25px 80px -20px rgba(15, 23, 42, 0.15)",
+        soft: "0 2px 40px -12px rgba(0, 0, 0, 0.08)",
+        card: "0 4px 24px -4px rgba(0, 0, 0, 0.06)",
+        "card-hover": "0 20px 50px -12px rgba(37, 211, 102, 0.15)",
+        luxury: "0 25px 80px -20px rgba(0, 0, 0, 0.1)",
       },
       backgroundImage: {
         "hero-glow":
-          "radial-gradient(ellipse 80% 60% at 50% -10%, rgba(37, 99, 235, 0.12), transparent)",
-        "blue-gradient": "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+          "radial-gradient(ellipse 80% 60% at 50% -10%, rgba(37, 211, 102, 0.08), transparent)",
       },
       animation: {
         "fade-up": "fadeUp 0.8s ease-out forwards",

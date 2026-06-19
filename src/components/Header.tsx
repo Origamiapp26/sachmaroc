@@ -3,46 +3,51 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
+import ThemeToggle from "@/components/ThemeToggle";
+
+const links = [
+  { href: "/", label: "الرئيسية" },
+  { href: "/products", label: "المنتجات" },
+  { href: "/orders", label: "طلباتي" },
+  { href: "/about", label: "من نحن" },
+  { href: "/contact", label: "اتصل بنا" },
+  { href: "/faq", label: "أسئلة شائعة" },
+];
 
 export default function Header() {
   const { totalItems } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const links = [
-    { href: "/", label: "Accueil" },
-    { href: "/catalog", label: "Catalogue" },
-    { href: "/cart", label: "Panier" },
-  ];
-
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-100/80 bg-white/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-neutral-100 bg-white/90 backdrop-blur-xl dark:border-neutral-800 dark:bg-neutral-950/90">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-sm font-bold text-white">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink text-sm font-bold text-white dark:bg-whatsapp">
             S
           </span>
-          <span className="text-lg font-semibold tracking-tight text-ink">
-            Sach<span className="text-brand-600">Maroc</span>
+          <span className="text-lg font-bold tracking-tight text-ink dark:text-white">
+            Sach<span className="text-whatsapp">Maroc</span>
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-6 lg:flex">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-ink-muted transition-colors hover:text-brand-600"
+              className="text-sm font-medium text-ink-muted transition-colors hover:text-ink dark:hover:text-white"
             >
               {link.label}
             </Link>
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
           <Link
             href="/cart"
-            className="relative flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-ink transition-colors hover:border-brand-300 hover:bg-brand-50"
-            aria-label="Panier"
+            className="relative flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200 text-ink transition-colors hover:border-whatsapp hover:bg-whatsapp-light dark:border-neutral-700 dark:text-white"
+            aria-label="السلة"
           >
             <svg
               className="h-5 w-5"
@@ -58,7 +63,7 @@ export default function Header() {
               />
             </svg>
             {totalItems > 0 && (
-              <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand-600 text-[10px] font-bold text-white">
+              <span className="absolute -left-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-whatsapp text-[10px] font-bold text-white">
                 {totalItems}
               </span>
             )}
@@ -66,8 +71,8 @@ export default function Header() {
 
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-ink md:hidden"
-            aria-label="Menu"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200 text-ink lg:hidden dark:border-neutral-700 dark:text-white"
+            aria-label="القائمة"
           >
             <svg
               className="h-5 w-5"
@@ -95,13 +100,13 @@ export default function Header() {
       </div>
 
       {menuOpen && (
-        <nav className="border-t border-slate-100 bg-white px-4 py-4 md:hidden">
+        <nav className="border-t border-neutral-100 bg-white px-4 py-4 dark:border-neutral-800 dark:bg-neutral-950 lg:hidden">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setMenuOpen(false)}
-              className="block py-3 text-sm font-medium text-ink-muted transition-colors hover:text-brand-600"
+              className="block py-3 text-sm font-medium text-ink-muted transition-colors hover:text-ink"
             >
               {link.label}
             </Link>
