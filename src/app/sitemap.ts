@@ -1,21 +1,25 @@
 import { MetadataRoute } from "next";
-import { getProducts } from "@/lib/services/products";
-import { initDb } from "@/lib/init-db";
+import { getProducts } from "@/lib/products";
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  await initDb();
+export const dynamic = "force-dynamic";
+
+export default function sitemap(): MetadataRoute.Sitemap {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "https://sachmaroc.ma";
-  const products = await getProducts();
+  const products = getProducts();
+  const now = new Date();
+
+  const staticPages = ["/", "/products", "/about", "/contact", "/faq", "/terms", "/privacy", "/orders"];
 
   return [
-    { url: base, lastModified: new Date(), changeFrequency: "daily", priority: 1 },
-    { url: `${base}/products`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
-    { url: `${base}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-    { url: `${base}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-    { url: `${base}/faq`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
+    ...staticPages.map((path) => ({
+      url: `${base}${path}`,
+      lastModified: now,
+      changeFrequency: path === "/" ? ("daily" as const) : ("weekly" as const),
+      priority: path === "/" ? 1 : 0.6,
+    })),
     ...products.map((p) => ({
-      url: `${base}/products/${p.slug}`,
-      lastModified: new Date(),
+      url: `${base}/products/${p.id}`,
+      lastModified: p.createdAt ? new Date(p.createdAt) : now,
       changeFrequency: "weekly" as const,
       priority: 0.8,
     })),

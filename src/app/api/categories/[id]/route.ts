@@ -1,59 +1,59 @@
 import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
 import { isAdminAuthenticated } from "@/lib/auth";
-import {
-  updateCategory,
-  deleteCategory,
-  getCategoryById,
-  type CategoryInput,
-} from "@/lib/services/categories";
-import { initDb } from "@/lib/init-db";
+import { getProducts, ProductValidationError, renameCategory } from "@/lib/products";
+import { revalidateStorefront } from "@/lib/revalidate-store";
 
+export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
 export async function GET(_request: Request, context: RouteContext) {
-  await initDb();
   const { id } = await context.params;
-  const category = await getCategoryById(id);
-  if (!category) {
+  const products = getProducts().filter((p) => p.category === id);
+
+  if (products.length === 0) {
     return NextResponse.json({ error: "الفئة ما لقيناهاش" }, { status: 404 });
   }
-  return NextResponse.json(category);
+
+  return NextResponse.json({
+    id,
+    name: id,
+    productCount: products.length,
+  });
 }
 
 export async function PUT(request: Request, context: RouteContext) {
-  await initDb();
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
   }
 
   const { id } = await context.params;
-  const body = (await request.json()) as Partial<CategoryInput>;
-  const category = await updateCategory(id, body);
-  if (!category) {
-    return NextResponse.json({ error: "الفئة ما لقيناهاش" }, { status: 404 });
-  }
 
-  revalidatePath("/");
-  revalidatePath("/products");
-  return NextResponse.json(category);
+  try {
+    const body = (await request.json()) as { name?: string };
+    if (!body.name?.trim()) {
+      return NextResponse.json({ error: "اسم الفئة الجديد مطلوب" }, { status: 400 });
+    }
+
+    const count = renameCategory(id, body.name);
+    if (count === 0) {
+      return NextResponse.json({ error: "الفئة ما لقيناهاش" }, { status: 404 });
+    }
+
+    revalidateStorefront();
+    return NextResponse.json({ name: body.name.trim(), productCount: count });
+  } catch (err) {
+    if (err instanceof ProductValidationError) {
+      return NextResponse.json({ error: err.message }, { status: 400 });
+    }
+    return NextResponse.json({ error: "وقع خطأ فالتحديث" }, { status: 500 });
+  }
 }
 
-export async function DELETE(_request: Request, context: RouteContext) {
-  await initDb();
-  if (!(await isAdminAuthenticated())) {
-    return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
-  }
-
-  const { id } = await context.params;
-  const deleted = await deleteCategory(id);
-  if (!deleted) {
-    return NextResponse.json({ error: "الفئة ما لقيناهاش" }, { status: 404 });
-  }
-
-  revalidatePath("/");
-  revalidatePath("/products");
-  return NextResponse.json({ success: true });
+export async function DELETE() {
+  return NextResponse.json(
+    { error: "احذف المنتجات أو بدّل فئتها من صفحة المنتجات" },
+    { status: 405 }
+  );
 }

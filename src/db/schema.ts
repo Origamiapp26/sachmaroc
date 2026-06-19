@@ -77,6 +77,10 @@ export const orders = sqliteTable("orders", {
   customerCity: text("customer_city").notNull(),
   customerAddress: text("customer_address").notNull(),
   notes: text("notes").default(""),
+  subtotal: real("subtotal").notNull().default(0),
+  shippingCost: real("shipping_cost").notNull().default(0),
+  discount: real("discount").notNull().default(0),
+  couponCode: text("coupon_code").default(""),
   total: real("total").notNull(),
   status: text("status").notNull().default("pending"),
   createdAt: text("created_at").notNull(),
@@ -94,6 +98,12 @@ export const orderItems = sqliteTable("order_items", {
   productName: text("product_name").notNull(),
   quantity: integer("quantity").notNull(),
   unitPrice: real("unit_price").notNull(),
+});
+
+export const newsletterSubscribers = sqliteTable("newsletter_subscribers", {
+  id: text("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  createdAt: text("created_at").notNull(),
 });
 
 export type Admin = typeof admins.$inferSelect;

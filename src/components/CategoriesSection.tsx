@@ -1,10 +1,17 @@
 import Link from "next/link";
-import { getCategories } from "@/lib/services/categories";
-import { initDb } from "@/lib/init-db";
+import { getProducts, getCategories } from "@/lib/products";
+import ProductImage from "@/components/ProductImage";
 
-export default async function CategoriesSection() {
-  await initDb();
-  const categories = await getCategories();
+export const dynamic = "force-dynamic";
+
+export default function CategoriesSection() {
+  const products = getProducts();
+  const categories = getCategories().filter((c) => c !== "الكل");
+
+  const categoryImages: Record<string, string> = {};
+  for (const p of products) {
+    if (!categoryImages[p.category]) categoryImages[p.category] = p.image;
+  }
 
   return (
     <section className="bg-neutral-50/50 py-16 dark:bg-neutral-900/50 md:py-24">
@@ -17,27 +24,26 @@ export default async function CategoriesSection() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {categories.map((category) => (
             <Link
-              key={category.id}
-              href={`/products?category=${encodeURIComponent(category.name)}`}
+              key={category}
+              href={`/products?category=${encodeURIComponent(category)}`}
               className="group relative overflow-hidden rounded-2xl bg-white shadow-card transition-all hover:shadow-card-hover dark:bg-neutral-900"
             >
-              <div className="aspect-[16/10] overflow-hidden bg-neutral-100 dark:bg-neutral-800">
-                {category.image ? (
-                  <img
-                    src={category.image}
-                    alt={category.name}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              <div className="relative aspect-[16/10] overflow-hidden bg-neutral-100 dark:bg-neutral-800">
+                {categoryImages[category] && (
+                  <ProductImage
+                    src={categoryImages[category]}
+                    alt={category}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                ) : (
-                  <div className="flex h-full items-center justify-center text-4xl">🏷️</div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
               </div>
               <div className="absolute bottom-0 right-0 left-0 p-5">
-                <h3 className="text-lg font-bold text-white">{category.name}</h3>
-                {category.description && (
-                  <p className="mt-1 text-sm text-white/80">{category.description}</p>
-                )}
+                <h3 className="text-lg font-bold text-white">{category}</h3>
+                <p className="mt-1 text-sm text-white/80">
+                  {products.filter((p) => p.category === category).length} منتج
+                </p>
               </div>
             </Link>
           ))}

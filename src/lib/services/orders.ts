@@ -1,9 +1,9 @@
-import { eq, desc, and, gte, lte, sql, count } from "drizzle-orm";
+import { eq, desc, sql, count } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { db } from "@/db";
-import { orders, orderItems, products, categories } from "@/db/schema";
+import { orders, orderItems } from "@/db/schema";
 import type { Order, OrderStatus } from "@/types/product";
-import { decrementStock } from "./products";
+import { getProducts, getCategories } from "@/lib/products";
 
 async function hydrateOrder(row: typeof orders.$inferSelect): Promise<Order> {
   const items = await db.query.orderItems.findMany({
@@ -18,6 +18,10 @@ async function hydrateOrder(row: typeof orders.$inferSelect): Promise<Order> {
     customerCity: row.customerCity,
     customerAddress: row.customerAddress,
     notes: row.notes ?? "",
+    subtotal: row.subtotal ?? row.total,
+    shippingCost: row.shippingCost ?? 0,
+    discount: row.discount ?? 0,
+    couponCode: row.couponCode ?? "",
     total: row.total,
     status: row.status as OrderStatus,
     createdAt: row.createdAt,
@@ -45,6 +49,9 @@ export interface CreateOrderInput {
   customerCity: string;
   customerAddress: string;
   notes?: string;
+  couponCode?: string;
+  shippingCost?: number;
+  discount?: number;
   items: {
     productId: string;
     productName: string;
@@ -57,10 +64,13 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
   const id = nanoid();
   const now = new Date().toISOString();
   const orderNumber = generateOrderNumber();
-  const total = input.items.reduce(
+  const subtotal = input.items.reduce(
     (sum, i) => sum + i.unitPrice * i.quantity,
     0
   );
+  const shippingCost = input.shippingCost ?? 0;
+  const discount = input.discount ?? 0;
+  const total = Math.max(0, subtotal + shippingCost - discount);
 
   await db.insert(orders).values({
     id,
@@ -70,6 +80,10 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
     customerCity: input.customerCity,
     customerAddress: input.customerAddress,
     notes: input.notes ?? "",
+    subtotal,
+    shippingCost,
+    discount,
+    couponCode: input.couponCode ?? "",
     total,
     status: "pending",
     createdAt: now,
@@ -85,7 +99,6 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
       quantity: item.quantity,
       unitPrice: item.unitPrice,
     });
-    await decrementStock(item.productId, item.quantity);
   }
 
   return (await getOrderById(id))!;
@@ -133,7 +146,9 @@ export async function updateOrderStatus(
 }
 
 export async function getDashboardStats() {
-  const [productCount] = await db.select({ count: count() }).from(products);
+  const allProducts = getProducts();
+  const categoryNames = getCategories().filter((c) => c !== "الكل");
+
   const [orderCount] = await db.select({ count: count() }).from(orders);
   const [pendingCount] = await db
     .select({ count: count() })
@@ -143,18 +158,54 @@ export async function getDashboardStats() {
     .select({ total: sql<number>`COALESCE(SUM(${orders.total}), 0)` })
     .from(orders)
     .where(eq(orders.status, "delivered"));
-  const [lowStock] = await db
-    .select({ count: count() })
-    .from(products)
-    .where(and(eq(products.inStock, true), lte(products.stockQuantity, 5)));
-  const [categoryCount] = await db.select({ count: count() }).from(categories);
 
   return {
-    totalProducts: productCount.count,
+    totalProducts: allProducts.length,
     totalOrders: orderCount.count,
     pendingOrders: pendingCount.count,
     totalRevenue: revenue.total ?? 0,
-    lowStockProducts: lowStock.count,
-    totalCategories: categoryCount.count,
+    lowStockProducts: allProducts.filter((p) => !p.inStock).length,
+    totalCategories: categoryNames.length,
   };
+}
+
+export async function exportOrdersCsv(): Promise<string> {
+  const allOrders = await getOrders();
+  const headers = [
+    "رقم الطلب",
+    "الاسم",
+    "الهاتف",
+    "المدينة",
+    "العنوان",
+    "المجموع الفرعي",
+    "التوصيل",
+    "الخصم",
+    "المجموع",
+    "الحالة",
+    "التاريخ",
+    "المنتجات",
+  ];
+
+  const rows = allOrders.map((o) => [
+    o.orderNumber,
+    o.customerName,
+    o.customerPhone,
+    o.customerCity,
+    o.customerAddress,
+    o.subtotal,
+    o.shippingCost,
+    o.discount,
+    o.total,
+    o.status,
+    o.createdAt,
+    o.items.map((i) => `${i.productName}×${i.quantity}`).join(" | "),
+  ]);
+
+  const bom = "\uFEFF";
+  return (
+    bom +
+    [headers, ...rows]
+      .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(","))
+      .join("\n")
+  );
 }

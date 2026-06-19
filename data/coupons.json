@@ -1,0 +1,18 @@
+[
+  {
+    "code": "MAROC10",
+    "type": "percent",
+    "value": 10,
+    "active": true,
+    "minOrder": 200,
+    "expiresAt": "2027-12-31"
+  },
+  {
+    "code": "SACH50",
+    "type": "fixed",
+    "value": 50,
+    "active": true,
+    "minOrder": 300,
+    "expiresAt": "2027-06-30"
+  }
+]

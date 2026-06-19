@@ -1,3 +1,5 @@
+import ProductImage from "@/components/ProductImage";
+
 export const metadata = {
   title: "من نحن — SachMaroc",
   description: "تعرف على قصة SachMaroc ورسالتنا",
@@ -14,11 +16,13 @@ export default function AboutPage() {
       </div>
 
       <div className="mx-auto max-w-3xl space-y-8">
-        <div className="overflow-hidden rounded-3xl">
-          <img
+        <div className="relative aspect-[21/9] overflow-hidden rounded-3xl">
+          <ProductImage
             src="https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=1200&q=80"
             alt="SachMaroc"
-            className="aspect-[21/9] w-full object-cover"
+            fill
+            className="object-cover"
+            sizes="100vw"
           />
         </div>
 
