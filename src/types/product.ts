@@ -36,11 +36,35 @@ export interface Product {
   isNewArrival?: boolean;
   /** تاريخ الإضافة (ISO) */
   createdAt?: string;
+  /** رابط صفحة الهبوط: /landing/[slug] */
+  slug?: string;
+  /** محتوى مخصص لصفحة الهبوط */
+  landing?: ProductLanding;
+}
+
+export interface LandingBenefit {
+  icon: string;
+  title: string;
+  text: string;
+}
+
+export interface LandingFAQItem {
+  question: string;
+  answer: string;
+}
+
+export interface ProductLanding {
+  headline?: string;
+  subheadline?: string;
+  benefits?: LandingBenefit[];
+  faq?: LandingFAQItem[];
 }
 
 /** بيانات إنشاء/تعديل منتج من لوحة الإدارة */
 export type ProductInput = Omit<Product, "id" | "gallery"> & {
   gallery?: string[];
+  slug?: string;
+  landing?: ProductLanding;
 };
 
 export interface ProductFilters {
@@ -52,7 +76,7 @@ export interface ProductFilters {
 }
 
 export type OrderStatus =
-  | "pending"
+  | "new"
   | "confirmed"
   | "shipped"
   | "delivered"

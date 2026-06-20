@@ -6,6 +6,7 @@ import AdminShell from "@/components/admin/AdminShell";
 import ProductImage from "@/components/ProductImage";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { formatPrice } from "@/lib/utils";
+import { getLandingUrl } from "@/lib/product-urls";
 import type { Product } from "@/types/product";
 
 export default function AdminProductsPage() {
@@ -101,6 +102,7 @@ export default function AdminProductsPage() {
               <th className="px-4 py-3 text-right font-medium">الفئة</th>
               <th className="px-4 py-3 text-right font-medium">الثمن</th>
               <th className="px-4 py-3 text-right font-medium">الحالة</th>
+              <th className="px-4 py-3 text-right font-medium">صفحة الهبوط</th>
               <th className="px-4 py-3 text-right font-medium">إجراءات</th>
             </tr>
           </thead>
@@ -147,7 +149,26 @@ export default function AdminProductsPage() {
                   </div>
                 </td>
                 <td className="px-4 py-3">
-                  <div className="flex gap-2">
+                  <a
+                    href={getLandingUrl(product)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-medium text-whatsapp hover:underline"
+                    dir="ltr"
+                  >
+                    /landing/{product.slug || `product-${product.id}`}
+                  </a>
+                </td>
+                <td className="px-4 py-3">
+                  <div className="flex flex-wrap gap-2">
+                    <a
+                      href={getLandingUrl(product)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-lg bg-whatsapp-light px-3 py-1.5 text-xs font-medium text-whatsapp-dark dark:bg-whatsapp/20"
+                    >
+                      هبوط
+                    </a>
                     <Link
                       href={`/admin/products/${product.id}/edit`}
                       className="rounded-lg bg-neutral-100 px-3 py-1.5 text-xs font-medium dark:bg-neutral-800"
@@ -189,9 +210,25 @@ export default function AdminProductsPage() {
                 <p className="font-bold text-ink dark:text-white">{product.name}</p>
                 <p className="text-xs text-ink-muted">{product.category}</p>
                 <p className="mt-1 font-medium">{formatPrice(product.price)}</p>
+                <a
+                  href={getLandingUrl(product)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1 inline-block text-xs text-whatsapp"
+                >
+                  صفحة الهبوط ↗
+                </a>
               </div>
             </div>
-            <div className="mt-3 flex gap-2">
+            <div className="mt-3 flex flex-wrap gap-2">
+              <a
+                href={getLandingUrl(product)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-lg bg-whatsapp-light px-3 py-2 text-center text-xs font-medium text-whatsapp-dark dark:bg-whatsapp/20"
+              >
+                هبوط
+              </a>
               <Link
                 href={`/admin/products/${product.id}/edit`}
                 className="flex-1 rounded-lg bg-neutral-100 py-2 text-center text-xs font-medium dark:bg-neutral-800"

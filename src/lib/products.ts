@@ -25,6 +25,8 @@ import { readFileSync, writeFileSync, renameSync } from "fs";
 import path from "path";
 import { unstable_noStore as noStore } from "next/cache";
 import { WHATSAPP_NUMBER } from "@/lib/config";
+import { slugify, isValidSlug } from "@/lib/slug";
+import { getProductSlug, getLandingUrl } from "@/lib/product-urls";
 import type { Product, ProductFilters, ProductInput } from "@/types/product";
 
 const PRODUCTS_FILE = path.join(process.cwd(), "data", "products.json");
@@ -73,6 +75,19 @@ export function getProductsUncached(): Product[] {
 export function getProductById(id: string): Product | undefined {
   return getProducts().find((p) => p.id === id);
 }
+
+/** منتج واحد بالـ slug */
+export function getProductBySlug(slug: string): Product | undefined {
+  const normalized = slug.trim().toLowerCase();
+  return getProducts().find((p) => getProductSlug(p) === normalized);
+}
+
+/** جميع slugs للصفحات */
+export function getAllLandingSlugs(): string[] {
+  return getProducts().map(getProductSlug);
+}
+
+export { getProductSlug, getLandingUrl } from "@/lib/product-urls";
 
 /** الأكثر مبيعاً */
 export function getBestSellerProducts(): Product[] {
@@ -222,6 +237,15 @@ export function validateProductInput(
     throw new ProductValidationError(errors.join("، "));
   }
 
+  let slug: string | undefined;
+  if (data.slug !== undefined && data.slug !== null && String(data.slug).trim()) {
+    const s = String(data.slug).trim().toLowerCase();
+    if (!isValidSlug(s)) {
+      throw new ProductValidationError("الرابط (slug) غير صالح — استعمل حروف إنجليزية وأرقام وشرطات");
+    }
+    slug = s;
+  }
+
   return {
     name: String(data.name).trim(),
     description: String(data.description).trim(),
@@ -240,6 +264,8 @@ export function validateProductInput(
     whatsappNumber: String(data.whatsappNumber || WHATSAPP_NUMBER).trim(),
     isBestSeller: Boolean(data.isBestSeller),
     isNewArrival: Boolean(data.isNewArrival),
+    slug,
+    landing: data.landing,
   };
 }
 
@@ -267,6 +293,7 @@ export function createProduct(input: ProductInput): Product {
     id,
     ...data,
     gallery: data.gallery ?? [],
+    slug: data.slug || slugify(data.name) || `product-${id}`,
     createdAt: new Date().toISOString(),
   };
   writeProductsFile([...products, product]);
@@ -286,7 +313,13 @@ export function updateProduct(
 
   const merged = { ...products[index], ...input };
   const data = validateProductInput(merged);
-  const product: Product = { id, ...data, gallery: data.gallery ?? [] };
+  const product: Product = {
+    id,
+    ...data,
+    gallery: data.gallery ?? [],
+    slug: data.slug || products[index].slug || slugify(data.name) || `product-${id}`,
+    landing: data.landing ?? products[index].landing,
+  };
   const updated = [...products];
   updated[index] = product;
   writeProductsFile(updated);

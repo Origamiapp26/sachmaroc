@@ -4,7 +4,13 @@ import ProductImage from "@/components/ProductImage";
 
 export const dynamic = "force-dynamic";
 
-export default function CategoriesSection() {
+export default function CategoriesSection({
+  title = "تصفح حسب الفئة",
+  subtitle = "الفئات",
+}: {
+  title?: string;
+  subtitle?: string;
+}) {
   const products = getProducts();
   const categories = getCategories().filter((c) => c !== "الكل");
 
@@ -17,8 +23,8 @@ export default function CategoriesSection() {
     <section className="bg-neutral-50/50 py-16 dark:bg-neutral-900/50 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <p className="mb-2 text-xs font-bold uppercase tracking-widest text-whatsapp">الفئات</p>
-          <h2 className="text-3xl font-bold tracking-tight text-ink dark:text-white">تصفح حسب الفئة</h2>
+          <p className="mb-2 text-xs font-bold uppercase tracking-widest text-whatsapp">{subtitle}</p>
+          <h2 className="text-3xl font-bold tracking-tight text-ink dark:text-white">{title}</h2>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

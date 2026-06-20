@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useSettings } from "@/context/SettingsContext";
-import { formatPrice, buildWhatsAppOrderUrl } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
+import { trackInitiateCheckout, trackPurchase } from "@/lib/tracking";
 import CashOnDeliveryBadge from "@/components/CashOnDeliveryBadge";
 
 export default function CheckoutPage() {
@@ -31,6 +32,22 @@ export default function CheckoutPage() {
 
   const subtotal = totalPrice;
   const grandTotal = Math.max(0, subtotal + shippingCost - discount);
+  const checkoutTracked = useRef(false);
+
+  useEffect(() => {
+    if (items.length === 0 || checkoutTracked.current) return;
+    checkoutTracked.current = true;
+    trackInitiateCheckout(
+      items.map((i) => ({
+        id: i.product.id,
+        name: i.product.name,
+        price: i.product.price,
+        category: i.product.category,
+        quantity: i.quantity,
+      })),
+      grandTotal
+    );
+  }, [items, grandTotal]);
 
   if (items.length === 0) {
     return (
@@ -84,13 +101,19 @@ export default function CheckoutPage() {
 
     if (res.ok) {
       const order = await res.json();
+      trackPurchase({
+        orderNumber: order.orderNumber,
+        total: order.total,
+        shippingCost: order.shippingCost ?? shippingCost,
+        items: orderItems.map((i) => ({
+          id: i.productId,
+          name: i.productName,
+          price: i.unitPrice,
+          category: items.find((x) => x.product.id === i.productId)?.product.category ?? "",
+          quantity: i.quantity,
+        })),
+      });
       clearCart();
-      const waUrl = buildWhatsAppOrderUrl(
-        orderItems.map((i) => ({ name: i.productName, quantity: i.quantity, price: i.unitPrice })),
-        order.total,
-        order.orderNumber
-      );
-      window.open(waUrl, "_blank");
       router.push(`/orders?orderNumber=${order.orderNumber}`);
     }
     setLoading(false);
@@ -157,7 +180,7 @@ export default function CheckoutPage() {
         <CashOnDeliveryBadge />
 
         <button type="submit" disabled={loading} className="w-full rounded-full bg-whatsapp py-4 text-sm font-bold text-white hover:bg-whatsapp-dark disabled:opacity-50">
-          {loading ? "كيتسجل الطلب..." : "أكد الطلب (الدفع عند الاستلام)"}
+          {loading ? "كيتسجل الطلب..." : "اطلب الآن"}
         </button>
       </form>
     </div>

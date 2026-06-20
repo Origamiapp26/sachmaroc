@@ -3,15 +3,19 @@
 import { useSettings } from "@/context/SettingsContext";
 
 export default function TestimonialsSection() {
-  const { testimonials } = useSettings();
-  if (testimonials.length === 0) return null;
+  const { testimonials, homepage } = useSettings();
+  if (testimonials.length === 0 || !homepage.reviews.enabled) return null;
 
   return (
     <section className="py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <p className="mb-2 text-xs font-bold uppercase tracking-widest text-whatsapp">آراء الزبناء</p>
-          <h2 className="text-3xl font-bold text-ink dark:text-white">شنو كيقولو علينا</h2>
+          <p className="mb-2 text-xs font-bold uppercase tracking-widest text-whatsapp">
+            {homepage.reviews.subtitle}
+          </p>
+          <h2 className="text-3xl font-bold text-ink dark:text-white">
+            {homepage.reviews.title}
+          </h2>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {testimonials.map((t) => (

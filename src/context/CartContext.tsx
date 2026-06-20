@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import type { Product } from "@/types/product";
+import { trackAddToCart } from "@/lib/tracking";
 
 export interface CartItem {
   product: Product;
@@ -50,6 +51,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [items, hydrated]);
 
   const addItem = useCallback((product: Product, quantity = 1) => {
+    trackAddToCart(
+      {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        category: product.category,
+      },
+      quantity
+    );
     setItems((prev) => {
       const existing = prev.find((i) => i.product.id === product.id);
       if (existing) {

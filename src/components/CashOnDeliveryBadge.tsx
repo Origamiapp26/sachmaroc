@@ -1,4 +1,13 @@
-export default function CashOnDeliveryBadge() {
+export default function CashOnDeliveryBadge({ compact = false }: { compact?: boolean }) {
+  if (compact) {
+    return (
+      <div className="inline-flex items-center gap-1.5 rounded-full border border-whatsapp/30 bg-whatsapp-light/60 px-3 py-1.5 text-xs font-bold text-whatsapp-dark dark:text-whatsapp">
+        <span aria-hidden>💵</span>
+        <span>الدفع عند الاستلام</span>
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-whatsapp/20 bg-whatsapp-light/50 px-5 py-4">
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-whatsapp-light">

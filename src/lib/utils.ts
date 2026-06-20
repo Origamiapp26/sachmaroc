@@ -62,12 +62,61 @@ export function buildWhatsAppContactUrl(message?: string, number?: string): stri
   return `https://wa.me/${num}?text=${encodeURIComponent(text)}`;
 }
 
+/** رسالة واتساب كاملة بعد طلب مباشر من صفحة المنتج */
+export function buildWhatsAppDirectOrderUrl(
+  order: {
+    orderNumber: string;
+    customerName: string;
+    customerPhone: string;
+    customerCity: string;
+    customerAddress: string;
+    productName: string;
+    quantity: number;
+    unitPrice: number;
+    shippingCost: number;
+    total: number;
+    productUrl?: string;
+  },
+  number?: string
+): string {
+  const num = number || WHATSAPP_NUMBER;
+  const subtotal = order.unitPrice * order.quantity;
+
+  const message = [
+    "السلام عليكم SachMaroc 👋",
+    "",
+    `*طلب جديد #${order.orderNumber}*`,
+    "",
+    `📦 المنتج: ${order.productName}`,
+    `🔢 الكمية: ${order.quantity}`,
+    `💰 ثمن المنتج: ${formatPrice(subtotal)}`,
+    `🚚 التوصيل (${order.customerCity}): ${formatPrice(order.shippingCost)}`,
+    `*المجموع: ${formatPrice(order.total)}*`,
+    "",
+    "👤 معلومات الزبون:",
+    `الاسم: ${order.customerName}`,
+    `الهاتف: ${order.customerPhone}`,
+    `المدينة: ${order.customerCity}`,
+    `العنوان: ${order.customerAddress}`,
+    "",
+    order.productUrl ? `🔗 ${order.productUrl}` : "",
+    "💵 الدفع عند الاستلام",
+    "",
+    "شكراً!",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  return `https://wa.me/${num}?text=${encodeURIComponent(message)}`;
+}
+
 export function cn(...classes: (string | false | null | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
 }
 
 export const ORDER_STATUS_LABELS: Record<string, string> = {
-  pending: "قيد الانتظار",
+  new: "جديد",
+  pending: "جديد",
   confirmed: "مؤكد",
   shipped: "في الطريق",
   delivered: "تم التوصيل",

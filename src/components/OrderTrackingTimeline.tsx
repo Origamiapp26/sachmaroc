@@ -1,7 +1,7 @@
 import { ORDER_STATUS_LABELS } from "@/lib/utils";
 import type { OrderStatus } from "@/types/product";
 
-const STEPS: OrderStatus[] = ["pending", "confirmed", "shipped", "delivered"];
+const STEPS: OrderStatus[] = ["new", "confirmed", "shipped", "delivered"];
 
 export default function OrderTrackingTimeline({ status }: { status: OrderStatus }) {
   if (status === "cancelled") {
@@ -12,7 +12,8 @@ export default function OrderTrackingTimeline({ status }: { status: OrderStatus 
     );
   }
 
-  const currentIndex = STEPS.indexOf(status);
+  const normalized = (status as string) === "pending" ? "new" : status;
+  const currentIndex = STEPS.indexOf(normalized);
 
   return (
     <ol className="flex flex-col gap-0 sm:flex-row sm:gap-0">

@@ -2,6 +2,9 @@
   "storeName": "SachMaroc",
   "logo": "",
   "whatsappNumber": "212607674922",
+  "googleSheetsWebhookUrl": "",
+  "facebookPixelId": "",
+  "googleAnalyticsId": "",
   "contact": {
     "email": "contact@sachmaroc.ma",
     "phone": "0607674922",
@@ -12,14 +15,45 @@
     "instagram": "https://instagram.com/sachmaroc",
     "tiktok": ""
   },
-  "hero": {
-    "badge": "منتجات مغربية أصلية",
-    "title": "مرحبا بكم فـ",
-    "titleHighlight": "SachMaroc",
-    "subtitle": "لقا أفضل المنتجات بأثمنة مناسبة والتوصيل لجميع المدن المغربية",
-    "image": "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=800&q=80",
-    "ctaPrimary": "شوف المنتجات",
-    "ctaSecondary": "الأكثر مبيعاً"
+  "heroSlides": [
+    { "productId": "1" },
+    { "productId": "2" },
+    { "productId": "3" },
+    { "productId": "5" },
+    { "productId": "6" }
+  ],
+  "trustBar": [
+    { "icon": "🚚", "text": "توصيل لجميع المدن" },
+    { "icon": "💰", "text": "الدفع عند الاستلام" },
+    { "icon": "⭐", "text": "منتجات مختارة بعناية" },
+    { "icon": "📱", "text": "طلب عبر واتساب" }
+  ],
+  "homepage": {
+    "bestSellers": {
+      "enabled": true,
+      "subtitle": "الأكثر طلباً",
+      "title": "الأكثر مبيعاً"
+    },
+    "newArrivals": {
+      "enabled": true,
+      "subtitle": "جديد",
+      "title": "وافدات جديدة"
+    },
+    "reviews": {
+      "enabled": true,
+      "subtitle": "آراء الزبناء",
+      "title": "شنو كيقولو علينا"
+    },
+    "categories": {
+      "enabled": true,
+      "subtitle": "الفئات",
+      "title": "تصفح حسب الفئة"
+    },
+    "featured": {
+      "enabled": true,
+      "subtitle": "مختارات",
+      "title": "منتجات مميزة"
+    }
   },
   "delivery": {
     "title": "التوصيل لجميع المدن المغربية",

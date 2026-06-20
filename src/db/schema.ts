@@ -82,7 +82,7 @@ export const orders = sqliteTable("orders", {
   discount: real("discount").notNull().default(0),
   couponCode: text("coupon_code").default(""),
   total: real("total").notNull(),
-  status: text("status").notNull().default("pending"),
+  status: text("status").notNull().default("new"),
   createdAt: text("created_at").notNull(),
   updatedAt: text("updated_at").notNull(),
 });

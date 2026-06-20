@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { getProducts } from "@/lib/products";
+import { getProductSlug } from "@/lib/product-urls";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: p.createdAt ? new Date(p.createdAt) : now,
       changeFrequency: "weekly" as const,
       priority: 0.8,
+    })),
+    ...products.map((p) => ({
+      url: `${base}/landing/${getProductSlug(p)}`,
+      lastModified: p.createdAt ? new Date(p.createdAt) : now,
+      changeFrequency: "weekly" as const,
+      priority: 0.95,
     })),
   ];
 }
