@@ -1,6 +1,3 @@
 export async function register() {
-  if (process.env.NEXT_RUNTIME === "nodejs") {
-    const { runMigrations } = await import("@/db/migrate");
-    runMigrations();
-  }
+  // Products are loaded from data/products.json — no database init needed.
 }

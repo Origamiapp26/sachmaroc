@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { loginAdmin } from "@/lib/auth";
 import { createSession, COOKIE_NAME, SESSION_MAX_AGE } from "@/lib/session";
+import { generateCsrfToken, setCsrfCookie } from "@/lib/csrf";
 import { initDb } from "@/lib/init-db";
 
 export const runtime = "nodejs";
@@ -18,7 +19,10 @@ export async function POST(request: Request) {
   }
 
   const token = await createSession(session);
-  const response = NextResponse.json({ success: true, username: session.username });
+  const csrfToken = generateCsrfToken();
+  await setCsrfCookie(csrfToken);
+
+  const response = NextResponse.json({ success: true, username: session.username, csrfToken });
   response.cookies.set(COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",

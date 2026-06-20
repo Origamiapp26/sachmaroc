@@ -1,0 +1,89 @@
+{
+  "storeName": "SachMaroc",
+  "logo": "",
+  "whatsappNumber": "212607674922",
+  "contact": {
+    "email": "contact@sachmaroc.ma",
+    "phone": "0607674922",
+    "address": "الدار البيضاء، المغرب"
+  },
+  "social": {
+    "facebook": "https://facebook.com/sachmaroc",
+    "instagram": "https://instagram.com/sachmaroc",
+    "tiktok": ""
+  },
+  "hero": {
+    "badge": "منتجات مغربية أصلية",
+    "title": "مرحبا بكم فـ",
+    "titleHighlight": "SachMaroc",
+    "subtitle": "لقا أفضل المنتجات بأثمنة مناسبة والتوصيل لجميع المدن المغربية",
+    "image": "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=800&q=80",
+    "ctaPrimary": "شوف المنتجات",
+    "ctaSecondary": "الأكثر مبيعاً"
+  },
+  "delivery": {
+    "title": "التوصيل لجميع المدن المغربية",
+    "description": "كنوصلو الطلبية ديالك لباب الدار. الدفع عند الاستلام بدون مخاطرة.",
+    "items": [
+      { "icon": "🚚", "title": "توصيل سريع", "text": "48-72 ساعة لمعظم المدن" },
+      { "icon": "💵", "title": "الدفع عند الاستلام", "text": "خلص ملي توصلك الطلبية" },
+      { "icon": "🔄", "title": "إرجاع سهل", "text": "خلال 7 أيام من الاستلام" }
+    ]
+  },
+  "cities": [
+    { "name": "الدار البيضاء", "shippingCost": 25 },
+    { "name": "الرباط", "shippingCost": 25 },
+    { "name": "مراكش", "shippingCost": 30 },
+    { "name": "طنجة", "shippingCost": 30 },
+    { "name": "فاس", "shippingCost": 30 },
+    { "name": "أكادير", "shippingCost": 35 },
+    { "name": "مكناس", "shippingCost": 30 },
+    { "name": "وجدة", "shippingCost": 35 },
+    { "name": "القنيطرة", "shippingCost": 25 },
+    { "name": "تطوان", "shippingCost": 30 },
+    { "name": "أغادير", "shippingCost": 35 },
+    { "name": "سلا", "shippingCost": 25 }
+  ],
+  "testimonials": [
+    {
+      "id": "1",
+      "name": "فاطمة الزهراء",
+      "city": "الدار البيضاء",
+      "rating": 5,
+      "text": "منتجات أصلية وتوصيل سريع! الجلابة وصلات بحالة ممتازة."
+    },
+    {
+      "id": "2",
+      "name": "يوسف العلمي",
+      "city": "مراكش",
+      "rating": 5,
+      "text": "خدمة ممتازة والدفع عند الاستلام مريح بزاف. ننصح بيهم."
+    },
+    {
+      "id": "3",
+      "name": "سارة بنجلون",
+      "city": "الرباط",
+      "rating": 5,
+      "text": "زيت الأركان أصلي وفابور. غادي نرجع نطلب منهم."
+    },
+    {
+      "id": "4",
+      "name": "محمد الإدريسي",
+      "city": "فاس",
+      "rating": 5,
+      "text": "الطاجين الفخاري كيجي بحال ما شفتو فالصور. شكراً SachMaroc!"
+    }
+  ],
+  "banners": [
+    {
+      "id": "1",
+      "text": "🎉 توصيل مجاني للطلبات فوق 500 درهم",
+      "link": "/products",
+      "active": true
+    }
+  ],
+  "seo": {
+    "defaultTitle": "SachMaroc — متجر مغربي أونلاين",
+    "defaultDescription": "لقا أفضل المنتجات المغربية بأثمنة مناسبة. الدفع عند الاستلام والتوصيل لجميع المدن المغربية."
+  }
+}

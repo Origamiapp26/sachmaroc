@@ -1,12 +1,34 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { verifySession, COOKIE_NAME } from "@/lib/session";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
-const ADMIN_PATHS = ["/admin"];
-const PROTECTED_API = ["/api/admin/stats", "/api/upload"];
+const PROTECTED_API = [
+  "/api/admin/stats",
+  "/api/admin/analytics",
+  "/api/admin/orders/export",
+  "/api/admin/products/export",
+  "/api/upload",
+];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (pathname === "/api/admin/login" && request.method === "POST") {
+    const ip = getClientIp(request);
+    const limited = rateLimit(`login:${ip}`, 10, 15 * 60_000);
+    if (!limited.ok) {
+      return NextResponse.json({ error: "محاولات كثيرة، عاود بعد شوية" }, { status: 429 });
+    }
+  }
+
+  if (pathname === "/api/orders" && request.method === "POST") {
+    const ip = getClientIp(request);
+    const limited = rateLimit(`order:${ip}`, 10, 60_000);
+    if (!limited.ok) {
+      return NextResponse.json({ error: "طلبات كثيرة" }, { status: 429 });
+    }
+  }
 
   const isAdminPage =
     pathname.startsWith("/admin") && pathname !== "/admin/login";
@@ -14,6 +36,8 @@ export async function middleware(request: NextRequest) {
   const isAdminMutation =
     (pathname.startsWith("/api/products") && request.method !== "GET") ||
     (pathname.startsWith("/api/categories") && request.method !== "GET") ||
+    (pathname.startsWith("/api/coupons") && request.method !== "GET") ||
+    (pathname.startsWith("/api/settings") && request.method !== "GET") ||
     (pathname.startsWith("/api/orders") &&
       request.method !== "GET" &&
       request.method !== "POST") ||
@@ -44,5 +68,14 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/products/:path*", "/api/categories/:path*", "/api/orders/:path*", "/api/admin/stats", "/api/upload"],
+  matcher: [
+    "/admin/:path*",
+    "/api/products/:path*",
+    "/api/categories/:path*",
+    "/api/coupons/:path*",
+    "/api/orders/:path*",
+    "/api/admin/:path*",
+    "/api/upload",
+    "/api/settings",
+  ],
 };

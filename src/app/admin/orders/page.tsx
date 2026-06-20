@@ -2,12 +2,14 @@
 
 import { useEffect, useState, useCallback } from "react";
 import AdminShell from "@/components/admin/AdminShell";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { formatPrice, ORDER_STATUS_LABELS } from "@/lib/utils";
 import type { Order, OrderStatus } from "@/types/product";
 
 const STATUSES: OrderStatus[] = ["pending", "confirmed", "shipped", "delivered", "cancelled"];
 
 export default function AdminOrdersPage() {
+  const ready = useAdminAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [filter, setFilter] = useState<OrderStatus | "">("");
 
@@ -17,7 +19,9 @@ export default function AdminOrdersPage() {
     setOrders(await res.json());
   }, [filter]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    if (ready) load();
+  }, [ready, load]);
 
   const updateStatus = async (id: string, status: OrderStatus) => {
     await fetch(`/api/orders/${id}`, {
@@ -30,6 +34,10 @@ export default function AdminOrdersPage() {
 
   return (
     <AdminShell>
+      {!ready ? (
+        <p className="text-ink-muted">كيتحمّل...</p>
+      ) : (
+        <>
       <h1 className="text-2xl font-bold text-ink dark:text-white">الطلبات</h1>
 
       <div className="mt-4 flex flex-wrap gap-2">
@@ -77,6 +85,8 @@ export default function AdminOrdersPage() {
         ))}
         {orders.length === 0 && <p className="text-ink-muted">ما كاين حتى طلب</p>}
       </div>
+        </>
+      )}
     </AdminShell>
   );
 }

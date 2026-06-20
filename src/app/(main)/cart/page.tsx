@@ -5,6 +5,7 @@ import { useCart } from "@/context/CartContext";
 import { formatPrice } from "@/lib/utils";
 import CashOnDeliveryBadge from "@/components/CashOnDeliveryBadge";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import ProductImage from "@/components/ProductImage";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, totalPrice, clearCart } =
@@ -63,20 +64,22 @@ export default function CartPage() {
               className="flex gap-4 rounded-2xl border border-neutral-100 bg-white p-4 shadow-card sm:gap-6 sm:p-6"
             >
               <Link
-                href={`/products/${product.slug}`}
-                className="shrink-0 overflow-hidden rounded-xl"
+                href={`/products/${product.id}`}
+                className="relative block h-24 w-24 shrink-0 overflow-hidden rounded-xl sm:h-28 sm:w-28"
               >
-                <img
+                <ProductImage
                   src={product.image}
                   alt={product.name}
-                  className="h-24 w-24 object-cover sm:h-28 sm:w-28"
+                  fill
+                  className="object-cover"
+                  sizes="112px"
                 />
               </Link>
 
               <div className="flex flex-1 flex-col justify-between">
                 <div>
                   <Link
-                    href={`/products/${product.slug}`}
+                    href={`/products/${product.id}`}
                     className="text-sm font-bold text-ink hover:text-whatsapp"
                   >
                     {product.name}

@@ -1,30 +1,25 @@
 import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
-import { isAdminAuthenticated } from "@/lib/auth";
-import {
-  getCategories,
-  createCategory,
-  type CategoryInput,
-} from "@/lib/services/categories";
-import { initDb } from "@/lib/init-db";
+import { getCategories, getProducts } from "@/lib/products";
 
-export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
+/** الفئات كتجي تلقائياً من حقل category فـ data/products.json */
 export async function GET() {
-  await initDb();
-  const categories = await getCategories();
+  const names = getCategories().filter((c) => c !== "الكل");
+  const products = getProducts();
+
+  const categories = names.map((name) => ({
+    id: name,
+    name,
+    productCount: products.filter((p) => p.category === name).length,
+  }));
+
   return NextResponse.json(categories);
 }
 
-export async function POST(request: Request) {
-  await initDb();
-  if (!(await isAdminAuthenticated())) {
-    return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
-  }
-
-  const body = (await request.json()) as CategoryInput;
-  const category = await createCategory(body);
-  revalidatePath("/");
-  revalidatePath("/products");
-  return NextResponse.json(category, { status: 201 });
+export async function POST() {
+  return NextResponse.json(
+    { error: "عدّل الفئات من حقل category فـ data/products.json" },
+    { status: 405 }
+  );
 }

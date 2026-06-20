@@ -3,14 +3,14 @@
 import { useSearchParams } from "next/navigation";
 import { useState, useMemo, Suspense } from "react";
 import ProductGrid from "@/components/ProductGrid";
-import type { Product, Category } from "@/types/product";
+import type { Product } from "@/types/product";
 
 function ProductsContent({
-  initialProducts,
+  products,
   categories,
 }: {
-  initialProducts: Product[];
-  categories: Category[];
+  products: Product[];
+  categories: string[];
 }) {
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q") || "");
@@ -19,10 +19,9 @@ function ProductsContent({
   );
   const [sort, setSort] = useState("newest");
   const [inStockOnly, setInStockOnly] = useState(false);
-  const [maxPrice, setMaxPrice] = useState("");
 
   const filtered = useMemo(() => {
-    let result = [...initialProducts];
+    let result = [...products];
 
     if (activeCategory !== "الكل") {
       result = result.filter((p) => p.category === activeCategory);
@@ -33,14 +32,11 @@ function ProductsContent({
         (p) =>
           p.name.toLowerCase().includes(q) ||
           p.description.toLowerCase().includes(q) ||
-          p.tagline.toLowerCase().includes(q)
+          p.category.toLowerCase().includes(q)
       );
     }
     if (inStockOnly) {
-      result = result.filter((p) => p.inStock && p.stockQuantity > 0);
-    }
-    if (maxPrice) {
-      result = result.filter((p) => p.price <= Number(maxPrice));
+      result = result.filter((p) => p.inStock);
     }
 
     switch (sort) {
@@ -50,9 +46,6 @@ function ProductsContent({
       case "price_desc":
         result.sort((a, b) => b.price - a.price);
         break;
-      case "rating":
-        result.sort((a, b) => b.rating - a.rating);
-        break;
       case "name":
         result.sort((a, b) => a.name.localeCompare(b.name, "ar"));
         break;
@@ -61,9 +54,7 @@ function ProductsContent({
     }
 
     return result;
-  }, [initialProducts, activeCategory, query, sort, inStockOnly, maxPrice]);
-
-  const allCategories = ["الكل", ...categories.map((c) => c.name)];
+  }, [products, activeCategory, query, sort, inStockOnly]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -71,11 +62,11 @@ function ProductsContent({
         <p className="mb-2 text-xs font-bold uppercase tracking-widest text-whatsapp">المتجر</p>
         <h1 className="text-4xl font-bold tracking-tight text-ink dark:text-white">المنتجات</h1>
         <p className="mx-auto mt-3 max-w-md text-sm text-ink-muted">
-          تصفح مجموعتنا من المنتجات المغربية الأصلية
+          تصفح مجموعتنا — البيانات كتجي من <code className="text-xs">data/products.json</code>
         </p>
       </div>
 
-      <div className="mb-8 grid gap-4 md:grid-cols-4">
+      <div className="mb-8 grid gap-4 md:grid-cols-3">
         <input
           type="search"
           placeholder="قلب على منتج..."
@@ -91,20 +82,12 @@ function ProductsContent({
           <option value="newest">الأحدث</option>
           <option value="price_asc">السعر: من الأقل</option>
           <option value="price_desc">السعر: من الأعلى</option>
-          <option value="rating">الأعلى تقييماً</option>
           <option value="name">الاسم</option>
         </select>
-        <input
-          type="number"
-          placeholder="أقصى سعر (د.م)"
-          value={maxPrice}
-          onChange={(e) => setMaxPrice(e.target.value)}
-          className="rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
-        />
       </div>
 
       <div className="mb-6 flex flex-wrap items-center gap-2">
-        {allCategories.map((cat) => (
+        {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => setActiveCategory(cat)}
@@ -118,12 +101,7 @@ function ProductsContent({
           </button>
         ))}
         <label className="mr-auto flex items-center gap-2 text-sm text-ink-muted">
-          <input
-            type="checkbox"
-            checked={inStockOnly}
-            onChange={(e) => setInStockOnly(e.target.checked)}
-            className="rounded"
-          />
+          <input type="checkbox" checked={inStockOnly} onChange={(e) => setInStockOnly(e.target.checked)} className="rounded" />
           متوفر فقط
         </label>
       </div>
@@ -135,15 +113,15 @@ function ProductsContent({
 }
 
 export default function ProductsPageClient({
-  initialProducts,
+  products,
   categories,
 }: {
-  initialProducts: Product[];
-  categories: Category[];
+  products: Product[];
+  categories: string[];
 }) {
   return (
     <Suspense fallback={<div className="py-20 text-center text-ink-muted">كيتم التحميل...</div>}>
-      <ProductsContent initialProducts={initialProducts} categories={categories} />
+      <ProductsContent products={products} categories={categories} />
     </Suspense>
   );
 }
