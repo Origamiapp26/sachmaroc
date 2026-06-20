@@ -7,6 +7,7 @@ import {
 } from "@/lib/services/orders";
 import type { OrderStatus } from "@/types/product";
 import { initDb } from "@/lib/init-db";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -18,12 +19,26 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const status = searchParams.get("status") as OrderStatus | null;
-  const orders = await getOrders(status || undefined);
+  const city = searchParams.get("city") || undefined;
+  const search = searchParams.get("search") || undefined;
+
+  const orders = await getOrders({
+    status: status || undefined,
+    city,
+    search,
+  });
   return NextResponse.json(orders);
 }
 
 export async function POST(request: Request) {
+  const ip = getClientIp(request);
+  const limited = rateLimit(`order:${ip}`, 10, 60_000);
+  if (!limited.ok) {
+    return NextResponse.json({ error: "طلبات كثيرة، عاود جرب" }, { status: 429 });
+  }
+
   await initDb();
+
   const body = (await request.json()) as CreateOrderInput;
 
   if (
@@ -36,6 +51,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "معلومات ناقصة" }, { status: 400 });
   }
 
-  const order = await createOrder(body);
-  return NextResponse.json(order, { status: 201 });
+  try {
+    const order = await createOrder(body);
+    return NextResponse.json(order, { status: 201 });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "وقع خطأ فالطلب";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
