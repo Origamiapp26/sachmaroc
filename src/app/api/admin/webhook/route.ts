@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/auth";
-import { getSettings } from "@/lib/settings";
-import { sendTestWebhook } from "@/lib/order-webhook";
+import { getActiveWebhookUrl, getWebhookConfigDebug } from "@/lib/webhook-config";
+import { sendDebugWebhook } from "@/lib/order-webhook";
 import { getWebhookLog, recordWebhookDelivery } from "@/lib/webhook-log";
 
 export const runtime = "nodejs";
@@ -12,13 +12,14 @@ export async function GET() {
     return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
   }
 
-  const { googleSheetsWebhookUrl } = getSettings();
-  const envOverride = Boolean(process.env.GOOGLE_SHEETS_WEBHOOK_URL?.trim());
+  const config = getWebhookConfigDebug();
+  const webhookUrl = getActiveWebhookUrl();
 
   return NextResponse.json({
-    configured: Boolean(googleSheetsWebhookUrl),
-    url: googleSheetsWebhookUrl,
-    source: envOverride ? "GOOGLE_SHEETS_WEBHOOK_URL env" : "data/settings.json",
+    configured: Boolean(webhookUrl),
+    url: webhookUrl,
+    source: config.source,
+    envVarSet: config.envVarSet,
     recentDeliveries: getWebhookLog(15),
   });
 }
@@ -29,15 +30,15 @@ export async function POST() {
     return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
   }
 
-  const { googleSheetsWebhookUrl } = getSettings();
-  if (!googleSheetsWebhookUrl) {
+  const webhookUrl = getActiveWebhookUrl();
+  if (!webhookUrl) {
     return NextResponse.json(
       { error: "googleSheetsWebhookUrl غير مضبوط" },
       { status: 400 }
     );
   }
 
-  const result = await sendTestWebhook(googleSheetsWebhookUrl);
+  const result = await sendDebugWebhook(webhookUrl);
   recordWebhookDelivery("SM-TEST-WEBHOOK", "test", result);
 
   return NextResponse.json({

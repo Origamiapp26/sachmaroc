@@ -60,8 +60,11 @@ export async function POST(request: Request) {
           ? {
               ok: webhook.ok,
               status: webhook.status,
+              statusText: webhook.statusText,
               error: webhook.error,
+              responseBody: webhook.ok ? undefined : webhook.responseBody,
               durationMs: webhook.durationMs,
+              url: webhook.url,
             }
           : null,
       },

@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { orders, orderItems } from "@/db/schema";
 import type { Order, OrderStatus } from "@/types/product";
 import { getProducts, getCategories } from "@/lib/products";
-import { getSettings } from "@/lib/settings";
+import { getActiveWebhookUrl } from "@/lib/webhook-config";
 import { sendOrderWebhook } from "@/lib/order-webhook";
 import type { WebhookDeliveryResult } from "@/lib/order-webhook";
 import { recordWebhookDelivery } from "@/lib/webhook-log";
@@ -151,11 +151,11 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
     productId: input.items[idx]?.productId ?? row.productId,
   }));
 
-  const { googleSheetsWebhookUrl } = getSettings();
+  const webhookUrl = getActiveWebhookUrl();
   let webhook: WebhookDeliveryResult | null = null;
 
-  if (googleSheetsWebhookUrl) {
-    webhook = await sendOrderWebhook(order, googleSheetsWebhookUrl);
+  if (webhookUrl) {
+    webhook = await sendOrderWebhook(order, webhookUrl);
     if (webhook) {
       recordWebhookDelivery(order.orderNumber, "order", webhook);
     }
