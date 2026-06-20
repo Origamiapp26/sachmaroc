@@ -1,10 +1,18 @@
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
-import { db } from "@/db";
-import { admins } from "@/db/schema";
 import { getSession, type SessionPayload } from "@/lib/session";
 
 export type { SessionPayload };
+
+async function getDb() {
+  const { db } = await import("@/db");
+  return db;
+}
+
+async function getAdminsSchema() {
+  const { admins } = await import("@/db/schema");
+  return admins;
+}
 
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 12);
@@ -20,6 +28,8 @@ export async function verifyPassword(
 export async function isAdminAuthenticated(): Promise<boolean> {
   const session = await getSession();
   if (!session) return false;
+  const db = await getDb();
+  const admins = await getAdminsSchema();
   const admin = await db.query.admins.findFirst({
     where: eq(admins.id, session.adminId),
   });
@@ -30,6 +40,8 @@ export async function loginAdmin(
   username: string,
   password: string
 ): Promise<SessionPayload | null> {
+  const db = await getDb();
+  const admins = await getAdminsSchema();
   const admin = await db.query.admins.findFirst({
     where: eq(admins.username, username),
   });

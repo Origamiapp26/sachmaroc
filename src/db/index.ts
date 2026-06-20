@@ -20,11 +20,26 @@ function getConnection() {
   return globalForDb.conn;
 }
 
+function createDb() {
+  return drizzle(getConnection(), { schema });
+}
+
 function getDb() {
   if (!globalForDb.db) {
-    globalForDb.db = drizzle(getConnection(), { schema });
+    globalForDb.db = createDb();
   }
   return globalForDb.db;
 }
 
-export const db = getDb();
+/** Lazy DB — avoids crashing routes that import auth but never query SQLite */
+export const db = new Proxy({} as ReturnType<typeof createDb>, {
+  get(_target, prop, receiver) {
+    const instance = getDb();
+    const value = Reflect.get(instance as object, prop, receiver);
+    return typeof value === "function"
+      ? (value as (...args: unknown[]) => unknown).bind(instance)
+      : value;
+  },
+});
+
+export { DB_PATH };
