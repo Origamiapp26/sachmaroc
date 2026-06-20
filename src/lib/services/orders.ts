@@ -6,6 +6,8 @@ import type { Order, OrderStatus } from "@/types/product";
 import { getProducts, getCategories } from "@/lib/products";
 import { getSettings } from "@/lib/settings";
 import { sendOrderWebhook } from "@/lib/order-webhook";
+import type { WebhookDeliveryResult } from "@/lib/order-webhook";
+import { recordWebhookDelivery } from "@/lib/webhook-log";
 import {
   appendOrderToSheet,
   isGoogleSheetsConfigured,
@@ -94,7 +96,12 @@ export interface CreateOrderInput {
   }[];
 }
 
-export async function createOrder(input: CreateOrderInput): Promise<Order> {
+export interface CreateOrderResult {
+  order: Order;
+  webhook: WebhookDeliveryResult | null;
+}
+
+export async function createOrder(input: CreateOrderInput): Promise<CreateOrderResult> {
   const orderNumber = await generateUniqueOrderNumber();
   const now = new Date().toISOString();
   const id = nanoid();
@@ -129,7 +136,8 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
     await db.insert(orderItems).values({
       id: nanoid(),
       orderId: id,
-      productId: item.productId,
+      // products.json IDs are not in SQLite — store null to avoid FK errors
+      productId: null,
       productName: item.productName,
       quantity: item.quantity,
       unitPrice: item.unitPrice,
@@ -137,10 +145,20 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
   }
 
   const order = (await getOrderById(id))!;
+  // Restore JSON product IDs for webhook / API response
+  order.items = order.items.map((row, idx) => ({
+    ...row,
+    productId: input.items[idx]?.productId ?? row.productId,
+  }));
 
   const { googleSheetsWebhookUrl } = getSettings();
+  let webhook: WebhookDeliveryResult | null = null;
+
   if (googleSheetsWebhookUrl) {
-    void sendOrderWebhook(order, googleSheetsWebhookUrl);
+    webhook = await sendOrderWebhook(order, googleSheetsWebhookUrl);
+    if (webhook) {
+      recordWebhookDelivery(order.orderNumber, "order", webhook);
+    }
   }
 
   if (isGoogleSheetsConfigured()) {
@@ -162,7 +180,7 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
     }).catch((err) => console.error("[google-sheets] sync failed:", err));
   }
 
-  return order;
+  return { order, webhook };
 }
 
 export async function getOrders(filters?: OrderFilters): Promise<Order[]> {

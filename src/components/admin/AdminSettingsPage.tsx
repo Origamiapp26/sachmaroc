@@ -19,6 +19,7 @@ export default function AdminSettingsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [webhookTest, setWebhookTest] = useState<string>("");
 
   useEffect(() => {
     if (!ready) return;
@@ -327,6 +328,27 @@ export default function AdminSettingsPage() {
               <p className="mt-1 text-xs text-ink-muted">
                 كل طلب جديد كيتبعت تلقائياً لهاد الرابط (POST JSON)
               </p>
+              <button
+                type="button"
+                onClick={async () => {
+                  setWebhookTest("كيترسل الاختبار...");
+                  const res = await fetch("/api/admin/webhook", { method: "POST" });
+                  const data = await res.json();
+                  setWebhookTest(
+                    data.ok
+                      ? `✓ نجح (${data.status}) — ${data.responseBody?.slice(0, 80) || "OK"}`
+                      : `✗ فشل: ${data.error || data.statusText} (${data.status})`
+                  );
+                }}
+                className="mt-3 rounded-lg border border-whatsapp/40 px-4 py-2 text-xs font-bold text-whatsapp"
+              >
+                اختبار Webhook
+              </button>
+              {webhookTest && (
+                <p className={`mt-2 text-xs ${webhookTest.startsWith("✓") ? "text-whatsapp" : "text-red-500"}`}>
+                  {webhookTest}
+                </p>
+              )}
             </div>
           </div>
         </section>

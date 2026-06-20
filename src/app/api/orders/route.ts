@@ -52,8 +52,21 @@ export async function POST(request: Request) {
   }
 
   try {
-    const order = await createOrder(body);
-    return NextResponse.json(order, { status: 201 });
+    const { order, webhook } = await createOrder(body);
+    return NextResponse.json(
+      {
+        ...order,
+        webhook: webhook
+          ? {
+              ok: webhook.ok,
+              status: webhook.status,
+              error: webhook.error,
+              durationMs: webhook.durationMs,
+            }
+          : null,
+      },
+      { status: 201 }
+    );
   } catch (err) {
     const message = err instanceof Error ? err.message : "وقع خطأ فالطلب";
     return NextResponse.json({ error: message }, { status: 500 });
