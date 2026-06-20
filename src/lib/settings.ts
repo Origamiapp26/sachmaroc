@@ -5,21 +5,31 @@ import type { StoreSettings } from "@/types/settings";
 
 const SETTINGS_FILE = path.join(process.cwd(), "data", "settings.json");
 
+const DEFAULT_HOMEPAGE: StoreSettings["homepage"] = {
+  bestSellers: { enabled: true, subtitle: "الأكثر طلباً", title: "الأكثر مبيعاً" },
+  newArrivals: { enabled: true, subtitle: "جديد", title: "وافدات جديدة" },
+  reviews: { enabled: true, subtitle: "آراء الزبناء", title: "شنو كيقولو علينا" },
+  categories: { enabled: true, subtitle: "الفئات", title: "تصفح حسب الفئة" },
+  featured: { enabled: true, subtitle: "مختارات", title: "منتجات مميزة" },
+};
+
 const DEFAULT_SETTINGS: StoreSettings = {
   storeName: "SachMaroc",
   logo: "",
   whatsappNumber: "212607674922",
+  googleSheetsWebhookUrl: "",
+  facebookPixelId: "",
+  googleAnalyticsId: "",
   contact: { email: "", phone: "", address: "" },
   social: { facebook: "", instagram: "", tiktok: "" },
-  hero: {
-    badge: "منتجات مغربية أصلية",
-    title: "مرحبا بكم فـ",
-    titleHighlight: "SachMaroc",
-    subtitle: "لقا أفضل المنتجات بأثمنة مناسبة",
-    image: "",
-    ctaPrimary: "شوف المنتجات",
-    ctaSecondary: "الأكثر مبيعاً",
-  },
+  heroSlides: [],
+  trustBar: [
+    { icon: "🚚", text: "توصيل لجميع المدن" },
+    { icon: "💰", text: "الدفع عند الاستلام" },
+    { icon: "⭐", text: "منتجات مختارة بعناية" },
+    { icon: "📱", text: "طلب عبر واتساب" },
+  ],
+  homepage: DEFAULT_HOMEPAGE,
   delivery: { title: "", description: "", items: [] },
   cities: [],
   testimonials: [],
@@ -30,11 +40,28 @@ const DEFAULT_SETTINGS: StoreSettings = {
   },
 };
 
+function mergeSettings(parsed: Partial<StoreSettings>): StoreSettings {
+  return {
+    ...DEFAULT_SETTINGS,
+    ...parsed,
+    homepage: { ...DEFAULT_HOMEPAGE, ...parsed.homepage },
+    contact: { ...DEFAULT_SETTINGS.contact, ...parsed.contact },
+    social: { ...DEFAULT_SETTINGS.social, ...parsed.social },
+    seo: { ...DEFAULT_SETTINGS.seo, ...parsed.seo },
+    heroSlides: parsed.heroSlides ?? DEFAULT_SETTINGS.heroSlides,
+    trustBar: parsed.trustBar ?? DEFAULT_SETTINGS.trustBar,
+    testimonials: parsed.testimonials ?? [],
+    banners: parsed.banners ?? [],
+    cities: parsed.cities ?? [],
+    delivery: parsed.delivery ?? DEFAULT_SETTINGS.delivery,
+  };
+}
+
 function readSettingsFile(): StoreSettings {
   noStore();
   try {
     const raw = readFileSync(SETTINGS_FILE, "utf-8");
-    return { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
+    return mergeSettings(JSON.parse(raw) as Partial<StoreSettings>);
   } catch {
     return DEFAULT_SETTINGS;
   }
@@ -53,7 +80,7 @@ export function getSettings(): StoreSettings {
 
 export function updateSettings(partial: Partial<StoreSettings>): StoreSettings {
   const current = readSettingsFile();
-  const updated = { ...current, ...partial };
+  const updated = mergeSettings({ ...current, ...partial });
   writeSettingsFile(updated);
   return updated;
 }

@@ -12,6 +12,39 @@ export interface SocialLinks {
   tiktok: string;
 }
 
+export interface HeroSlide {
+  /** معرّف المنتج من products.json */
+  productId: string;
+  /** عنوان مخصص (اختياري — يجي من المنتج) */
+  title?: string;
+  /** وصف قصير (اختياري) */
+  shortDescription?: string;
+  /** صورة مخصصة (اختياري) */
+  image?: string;
+  ctaOrder?: string;
+  ctaDetails?: string;
+}
+
+export interface TrustBarItem {
+  icon: string;
+  text: string;
+}
+
+export interface HomepageSectionConfig {
+  enabled: boolean;
+  subtitle: string;
+  title: string;
+}
+
+export interface HomepageSettings {
+  bestSellers: HomepageSectionConfig;
+  newArrivals: HomepageSectionConfig;
+  reviews: HomepageSectionConfig;
+  categories: HomepageSectionConfig;
+  featured: HomepageSectionConfig;
+}
+
+/** @deprecated استخدم heroSlides */
 export interface HeroSettings {
   badge: string;
   title: string;
@@ -63,9 +96,16 @@ export interface StoreSettings {
   storeName: string;
   logo: string;
   whatsappNumber: string;
+  /** Google Apps Script webhook — يرسل الطلبات تلقائياً */
+  googleSheetsWebhookUrl: string;
+  facebookPixelId: string;
+  googleAnalyticsId: string;
   contact: ContactInfo;
   social: SocialLinks;
-  hero: HeroSettings;
+  hero?: HeroSettings;
+  heroSlides: HeroSlide[];
+  trustBar: TrustBarItem[];
+  homepage: HomepageSettings;
   delivery: DeliverySettings;
   cities: CityShipping[];
   testimonials: Testimonial[];
