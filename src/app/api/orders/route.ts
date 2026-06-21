@@ -52,19 +52,16 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { order, webhook } = await createOrder(body);
+    const { order, sheets } = await createOrder(body);
     return NextResponse.json(
       {
         ...order,
-        webhook: webhook
+        sheets: sheets
           ? {
-              ok: webhook.ok,
-              status: webhook.status,
-              statusText: webhook.statusText,
-              error: webhook.error,
-              responseBody: webhook.ok ? undefined : webhook.responseBody,
-              durationMs: webhook.durationMs,
-              url: webhook.url,
+              ok: sheets.ok,
+              rowsWritten: sheets.rowsWritten,
+              error: sheets.error,
+              durationMs: sheets.durationMs,
             }
           : null,
       },

@@ -41,13 +41,9 @@ const DEFAULT_SETTINGS: StoreSettings = {
 };
 
 function mergeSettings(parsed: Partial<StoreSettings>): StoreSettings {
-  const envWebhook = process.env.GOOGLE_SHEETS_WEBHOOK_URL?.trim() || "";
-
   return {
     ...DEFAULT_SETTINGS,
     ...parsed,
-    googleSheetsWebhookUrl:
-      envWebhook || parsed.googleSheetsWebhookUrl || DEFAULT_SETTINGS.googleSheetsWebhookUrl,
     homepage: { ...DEFAULT_HOMEPAGE, ...parsed.homepage },
     contact: { ...DEFAULT_SETTINGS.contact, ...parsed.contact },
     social: { ...DEFAULT_SETTINGS.social, ...parsed.social },

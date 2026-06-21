@@ -4,13 +4,11 @@ import { db } from "@/db";
 import { orders, orderItems } from "@/db/schema";
 import type { Order, OrderStatus } from "@/types/product";
 import { getProducts, getCategories } from "@/lib/products";
-import { getActiveWebhookUrl } from "@/lib/webhook-config";
-import { sendOrderWebhook } from "@/lib/order-webhook";
-import type { WebhookDeliveryResult } from "@/lib/order-webhook";
-import { recordWebhookDelivery } from "@/lib/webhook-log";
 import {
-  appendOrderToSheet,
+  syncOrderToSheet,
+  updateOrderStatusInSheet,
   isGoogleSheetsConfigured,
+  type SheetsSyncResult,
 } from "@/lib/google-sheets";
 
 export interface OrderFilters {
@@ -98,7 +96,7 @@ export interface CreateOrderInput {
 
 export interface CreateOrderResult {
   order: Order;
-  webhook: WebhookDeliveryResult | null;
+  sheets: SheetsSyncResult | null;
 }
 
 export async function createOrder(input: CreateOrderInput): Promise<CreateOrderResult> {
@@ -114,6 +112,7 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
   const discount = input.discount ?? 0;
   const total = Math.max(0, subtotal + shippingCost - discount);
 
+  // SQLite backup — always persisted first
   await db.insert(orders).values({
     id,
     orderNumber,
@@ -136,7 +135,6 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
     await db.insert(orderItems).values({
       id: nanoid(),
       orderId: id,
-      // products.json IDs are not in SQLite — store null to avoid FK errors
       productId: null,
       productName: item.productName,
       quantity: item.quantity,
@@ -145,42 +143,18 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
   }
 
   const order = (await getOrderById(id))!;
-  // Restore JSON product IDs for webhook / API response
   order.items = order.items.map((row, idx) => ({
     ...row,
     productId: input.items[idx]?.productId ?? row.productId,
   }));
 
-  const webhookUrl = getActiveWebhookUrl();
-  let webhook: WebhookDeliveryResult | null = null;
-
-  if (webhookUrl) {
-    webhook = await sendOrderWebhook(order, webhookUrl);
-    if (webhook) {
-      recordWebhookDelivery(order.orderNumber, "order", webhook);
-    }
-  }
-
+  // Google Sheets — primary external sync via service account API
+  let sheets: SheetsSyncResult | null = null;
   if (isGoogleSheetsConfigured()) {
-    const primary = input.items[0];
-    void appendOrderToSheet({
-      orderId: orderNumber,
-      date: now,
-      productName: primary.productName,
-      productId: primary.productId,
-      customerName: input.customerName,
-      phone: input.customerPhone,
-      city: input.customerCity,
-      address: input.customerAddress,
-      quantity: primary.quantity,
-      productPrice: primary.unitPrice,
-      shippingCost,
-      total,
-      status: "new",
-    }).catch((err) => console.error("[google-sheets] sync failed:", err));
+    sheets = await syncOrderToSheet(order);
   }
 
-  return { order, webhook };
+  return { order, sheets };
 }
 
 export async function getOrders(filters?: OrderFilters): Promise<Order[]> {
@@ -249,6 +223,12 @@ export async function updateOrderStatus(
     .update(orders)
     .set({ status, updatedAt: new Date().toISOString() })
     .where(eq(orders.id, row.id));
+
+  if (isGoogleSheetsConfigured()) {
+    void updateOrderStatusInSheet(row.orderNumber, status).catch((err) =>
+      console.error("[google-sheets] status update failed:", err)
+    );
+  }
 
   return getOrderById(row.id);
 }

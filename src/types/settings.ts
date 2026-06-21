@@ -96,7 +96,7 @@ export interface StoreSettings {
   storeName: string;
   logo: string;
   whatsappNumber: string;
-  /** Google Apps Script webhook — يرسل الطلبات تلقائياً */
+  /** @deprecated — use GOOGLE_SHEET_ID env vars instead */
   googleSheetsWebhookUrl: string;
   facebookPixelId: string;
   googleAnalyticsId: string;

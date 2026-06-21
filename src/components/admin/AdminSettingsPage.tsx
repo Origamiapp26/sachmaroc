@@ -19,7 +19,7 @@ export default function AdminSettingsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
-  const [webhookTest, setWebhookTest] = useState<string>("");
+  const [sheetsTest, setSheetsTest] = useState<string>("");
 
   useEffect(() => {
     if (!ready) return;
@@ -314,42 +314,41 @@ export default function AdminSettingsPage() {
         </section>
 
         <section className="rounded-2xl border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900">
-          <h2 className="font-bold">الطلبات والتكامل</h2>
+          <h2 className="font-bold">Google Sheets (API)</h2>
           <div className="mt-4 space-y-4">
-            <div>
-              <label className="mb-1 block text-xs text-ink-muted">Google Sheets Webhook URL</label>
-              <input
-                placeholder="https://script.google.com/macros/s/..."
-                value={settings.googleSheetsWebhookUrl}
-                onChange={(e) => update("googleSheetsWebhookUrl", e.target.value)}
-                dir="ltr"
-                className="w-full rounded-xl border px-4 py-3 text-sm dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
-              />
-              <p className="mt-1 text-xs text-ink-muted">
-                كل طلب جديد كيتبعت تلقائياً لهاد الرابط (POST JSON)
+            <p className="text-sm text-ink-muted">
+              الطلبات كتتزامن تلقائياً مع Google Sheets عبر Service Account.
+              عيّن هاد المتغيرات فـ Vercel:
+            </p>
+            <ul className="list-inside list-disc space-y-1 text-xs text-ink-muted" dir="ltr">
+              <li>GOOGLE_SHEET_ID</li>
+              <li>GOOGLE_CLIENT_EMAIL</li>
+              <li>GOOGLE_PRIVATE_KEY</li>
+            </ul>
+            <p className="text-xs text-ink-muted">
+              SQLite كيبقى نسخة احتياطية محلية. شارك الـ Sheet مع client email ديال Service Account.
+            </p>
+            <button
+              type="button"
+              onClick={async () => {
+                setSheetsTest("كيترسل الاختبار...");
+                const res = await fetch("/api/admin/sheets", { method: "POST" });
+                const data = await res.json();
+                setSheetsTest(
+                  data.ok
+                    ? `✓ نجح — ${data.rowsWritten} صف(وف) (${data.durationMs}ms)`
+                    : `✗ فشل: ${data.error || "unknown error"}`
+                );
+              }}
+              className="rounded-lg border border-whatsapp/40 px-4 py-2 text-xs font-bold text-whatsapp"
+            >
+              اختبار Google Sheets API
+            </button>
+            {sheetsTest && (
+              <p className={`text-xs ${sheetsTest.startsWith("✓") ? "text-whatsapp" : "text-red-500"}`}>
+                {sheetsTest}
               </p>
-              <button
-                type="button"
-                onClick={async () => {
-                  setWebhookTest("كيترسل الاختبار...");
-                  const res = await fetch("/api/admin/webhook", { method: "POST" });
-                  const data = await res.json();
-                  setWebhookTest(
-                    data.ok
-                      ? `✓ نجح (${data.status}) — ${data.responseBody?.slice(0, 80) || "OK"}`
-                      : `✗ فشل: ${data.error || data.statusText} (${data.status})`
-                  );
-                }}
-                className="mt-3 rounded-lg border border-whatsapp/40 px-4 py-2 text-xs font-bold text-whatsapp"
-              >
-                اختبار Webhook
-              </button>
-              {webhookTest && (
-                <p className={`mt-2 text-xs ${webhookTest.startsWith("✓") ? "text-whatsapp" : "text-red-500"}`}>
-                  {webhookTest}
-                </p>
-              )}
-            </div>
+            )}
           </div>
         </section>
 
